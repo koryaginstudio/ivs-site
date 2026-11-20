@@ -5,12 +5,17 @@ import s from "../app/home.module.css";
 // Партнёры: официальные логотипы с ivs-corp.ru/company/partners/ - всегда цветные, hover приближает.
 export function Partners() {
   return (
-    <section className={s.section} aria-label="Партнёры">
+    <section id="partners" className={s.section} aria-label="Партнёры">
       <SectionHead title="Наши партнёры" linkHref={partnersHref} linkLabel="Все партнёры" />
       <ul className={s.partnerGrid}>
         {partnerLogos.map((p) => (
           <li key={p.name} className={s.partnerItem}>
-            <img className={s.partnerLogo} src={p.logo} alt={p.name} loading="lazy" />
+            <img
+              className={p.compact ? `${s.partnerLogo} ${s.partnerLogoCompact}` : s.partnerLogo}
+              src={p.logo}
+              alt={p.name}
+              loading="lazy"
+            />
           </li>
         ))}
       </ul>

@@ -245,9 +245,9 @@ export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
 export const newsHref = "https://ivs-corp.ru/info/news/";
 
 // Партнёры — официальные логотипы с ivs-corp.ru/company/partners/ (первые 9 - выборка Антона, ещё 6 добавлены 20.11).
-// Файлы в /public/partners обрезаны по контенту (trim пустых полей) - поэтому единая высота в CSS даёт ровный ритм.
-// Всегда в цвете, при наведении - приближение (scale).
-export type PartnerLogo = { name: string; logo: string };
+// Файлы в /public/partners обрезаны по контенту (trim пустых полей).
+// compact - вертикальные знаки, которым нужен больший контейнер для равного оптического веса.
+export type PartnerLogo = { name: string; logo: string; compact?: boolean };
 export const partnerLogos: PartnerLogo[] = [
   { name: "Microsoft", logo: "/partners/microsoft.jpg" },
   { name: "Acer", logo: "/partners/acer.jpg" },
@@ -260,9 +260,9 @@ export const partnerLogos: PartnerLogo[] = [
   { name: "Positive Technologies", logo: "/partners/positive.jpg" },
   { name: "КриптоПро", logo: "/partners/kriptopro.png" },
   { name: "Рутокен", logo: "/partners/rutoken.png" },
-  { name: "Код безопасности", logo: "/partners/securitycode.jpg" },
-  { name: "BaseAlt", logo: "/partners/basealt.png" },
-  { name: "Astra Linux", logo: "/partners/astra.png" },
+  { name: "Код безопасности", logo: "/partners/securitycode.jpg", compact: true },
+  { name: "BaseAlt", logo: "/partners/basealt.png", compact: true },
+  { name: "Astra Linux", logo: "/partners/astra.png", compact: true },
   { name: "ELTEX", logo: "/partners/eltex.jpg" },
 ];
 export const partnersHref = "https://ivs-corp.ru/company/partners/";
