@@ -1,4 +1,3 @@
-import { nav } from "@/components/ivs-content";
 import { IndustryCard } from "./IndustryCard";
 import { SectionHead } from "./SectionHead";
 import s from "../app/home.module.css";
@@ -20,7 +19,6 @@ const industries = [
 ];
 
 export function Cards() {
-  const services = nav.find(item => item.kind === "mega");
   return (
     <section className={s.cards} aria-label="Направления деятельности">
       <header className={styles.intro}>
@@ -38,16 +36,6 @@ export function Cards() {
           </li>
         ))}
       </ul>
-      {services?.kind === "mega" && (
-        <div className={styles.services}>
-          <SectionHead title="Услуги" linkHref={services.href} linkLabel="Все услуги" />
-          <ul className={styles.serviceList}>
-            {services.groups.map(group => (
-              <li key={group.href}><a href={group.href}>{group.label}</a></li>
-            ))}
-          </ul>
-        </div>
-      )}
     </section>
   );
 }

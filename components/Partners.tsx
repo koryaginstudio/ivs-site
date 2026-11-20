@@ -39,7 +39,7 @@ export function Partners() {
   };
 
   return (
-    <section id="partners" className={s.section} aria-label="Партнёры">
+    <section id="partners" className={`${s.section} ${s.sectionMuted}`} aria-label="Партнёры">
       <SectionHead title="Наши партнёры" linkHref={partnersHref} linkLabel="Все партнёры" />
       <div
         ref={trackRef}

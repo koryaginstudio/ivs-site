@@ -1,0 +1,180 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { nav } from "@/components/ivs-content";
+import { SectionHead } from "./SectionHead";
+import { Note } from "./Note";
+import s from "../app/home.module.css";
+import styles from "./Services.module.css";
+
+const services = nav.find((item) => item.kind === "mega");
+
+const previews = [
+  { video: "/services/complex-projects.webm", poster: "/projects/proj-02.jpg", project: "ЦОД и холодный коридор" },
+  { video: "/services/software.webm", poster: "/projects/proj-19.jpg", project: "Бизнес-система на базе 1С" },
+  { video: "/services/infrastructure.webm", poster: "/projects/proj-03.png", project: "Инфраструктура серверного оборудования" },
+  { video: "/services/security.webm", poster: "/projects/proj-07.jpeg", project: "Внедрение NGFW" },
+  { video: "/services/telecom.webm", poster: "/projects/proj-06.jpg", project: "Строительство сети связи" },
+  { video: "/services/engineering.webm", poster: "/projects/proj-12.jpeg", project: "Автоматизация инженерных систем" },
+  { video: "/services/support.webm", poster: "/projects/proj-14.jpg", project: "Централизованное обслуживание АРМ" },
+  { video: "/services/supply.webm", poster: "/projects/proj-04.jpg", project: "Поставка систем электропитания" },
+];
+
+function subserviceLabel(count: number) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (lastTwo >= 11 && lastTwo <= 14) return `${count} подуслуг`;
+  if (last === 1) return `${count} подуслуга`;
+  if (last >= 2 && last <= 4) return `${count} подуслуги`;
+  return `${count} подуслуг`;
+}
+
+export function Services() {
+  const [active, setActive] = useState(0);
+  const [open, setOpen] = useState(0);
+  // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
+  const [reducedMotion, setReducedMotion] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (reducedMotion) {
+      video.pause();
+      video.currentTime = 0;
+    } else {
+      video.play().catch(() => {
+        // Poster остаётся видимым, если браузер запретил автовоспроизведение.
+      });
+    }
+  }, [active, reducedMotion]);
+
+  if (services?.kind !== "mega") return null;
+
+  const current = services.groups[active] ?? services.groups[0];
+  const preview = previews[active] ?? previews[0];
+
+  return (
+    <section id="services" className={`${s.section} ${s.sectionMuted}`} aria-label="Услуги">
+      <SectionHead
+        title="Услуги"
+        linkHref={services.href}
+        linkLabel="Все услуги"
+        aside={
+          <Note id="note-services" label="Пометка к блоку услуг">
+            Структура и подуслуги взяты из официального меню ИВС. Для preview использованы реальные проектные фотографии
+            ИВС с локально созданным движением камеры, без стоковых роликов. Их можно заменить на съёмку заказчика без
+            изменения механики блока.
+          </Note>
+        }
+      />
+      <div className={styles.layout} onMouseLeave={() => setActive(open >= 0 ? open : active)}>
+        <ol className={styles.list}>
+          {services.groups.map((group, index) => {
+            const isActive = active === index;
+            const isOpen = open === index;
+            const panelId = `service-panel-${index}`;
+            const triggerId = `service-trigger-${index}`;
+
+            return (
+              <li
+                className={styles.item}
+                key={group.href}
+                data-active={isActive}
+                data-open={isOpen}
+                onMouseEnter={() => setActive(index)}
+              >
+                <button
+                  id={triggerId}
+                  type="button"
+                  className={styles.trigger}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  aria-label={`${group.label}: ${isOpen ? "скрыть" : "показать"} подуслуги`}
+                  onFocus={() => setActive(index)}
+                  onClick={() => {
+                    setActive(index);
+                    setOpen((currentOpen) => (currentOpen === index ? -1 : index));
+                  }}
+                >
+                  <span className={styles.index} aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className={styles.label}>{group.label}</span>
+                  <span className={styles.toggle} aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M5 12h14M12 5v14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  id={panelId}
+                  className={styles.panel}
+                  data-open={isOpen}
+                  role="region"
+                  aria-labelledby={triggerId}
+                  aria-hidden={!isOpen}
+                >
+                  <div className={styles.panelClip}>
+                    <div className={styles.panelInner}>
+                      <ul className={styles.sublist}>
+                        {group.items.map((item) => (
+                          <li key={item.href}>
+                            <a href={item.href} tabIndex={isOpen ? 0 : -1}>
+                              {item.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                      <a className={styles.directionLink} href={group.href} tabIndex={isOpen ? 0 : -1}>
+                        Открыть направление
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+
+        <figure className={styles.preview}>
+          <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
+            <video
+              key={active}
+              ref={videoRef}
+              className={styles.video}
+              src={preview.video}
+              poster={preview.poster}
+              muted
+              loop
+              playsInline
+              autoPlay={!reducedMotion}
+              preload="metadata"
+              aria-label={`${current.label}. ${preview.project}`}
+            />
+            <span className={styles.mediaIndex} aria-hidden="true">
+              {String(active + 1).padStart(2, "0")} / {String(services.groups.length).padStart(2, "0")}
+            </span>
+          </div>
+          <figcaption className={styles.caption} aria-live="polite">
+            <span className={styles.captionTitle}>{current.label}</span>
+            <span className={styles.captionMeta}>
+              {subserviceLabel(current.items.length)} · {preview.project}
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}

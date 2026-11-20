@@ -10,7 +10,7 @@ export async function News() {
   const items = await getLatestNews(3);
 
   return (
-    <section className={`${s.section} ${s.sectionMuted}`} aria-label="Новости и мероприятия">
+    <section className={s.section} aria-label="Новости и мероприятия">
       <SectionHead
         title="Новости и мероприятия"
         linkHref={newsHref}
