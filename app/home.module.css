@@ -981,7 +981,8 @@
 .cards {
   max-width: 1440px;
   margin: 0 auto;
-  padding: var(--space-24) var(--gutter) 0;
+  padding: 64px var(--gutter);
+  background: var(--surface-100);
 }
 
 .cardGrid {
@@ -1340,9 +1341,31 @@
 /* ================= Секции главной ниже hero ================= */
 
 .section {
+  --section-bg: var(--surface-100);
+  position: relative;
+  isolation: isolate;
   max-width: 1440px;
-  margin: var(--space-80) auto 0;
-  padding: 0 var(--gutter);
+  margin: 0 auto;
+  padding: 64px var(--gutter);
+  background: var(--section-bg);
+}
+
+/* Фон секции на всю ширину окна, контент остаётся в общем контейнере 1440px. */
+.section::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: var(--section-bg);
+  pointer-events: none;
+}
+
+.sectionMuted {
+  --section-bg: var(--surface-200);
 }
 
 /* шапка секции: один заголовок (без надзаголовков — правило Антона, 20.11) и ссылка-переход справа */
@@ -1923,7 +1946,7 @@
 /* --- Футер: тёмная подложка --- */
 
 .footer {
-  margin-top: var(--space-120);
+  margin-top: 0;
   background: var(--surface-inverse);
   color: var(--white_text_elements);
 }
@@ -2094,8 +2117,10 @@
 }
 
 @media (max-width: 640px) {
+  .cards,
   .section {
-    margin-top: var(--space-48);
+    margin-top: 0;
+    padding: var(--space-32) var(--gutter);
   }
   .head {
     flex-direction: column;
@@ -2139,7 +2164,7 @@
     height: 40px;
   }
   .footer {
-    margin-top: var(--space-80);
+    margin-top: 0;
   }
   .footerTop {
     grid-template-columns: 1fr;

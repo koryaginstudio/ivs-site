@@ -11,7 +11,7 @@ export async function Projects() {
   const projects = await getProjects();
 
   return (
-    <section className={s.section} aria-label="Проекты">
+    <section className={`${s.section} ${s.sectionMuted}`} aria-label="Проекты">
       <SectionHead
         title="Проекты"
         linkHref={projectsCatalogHref}
