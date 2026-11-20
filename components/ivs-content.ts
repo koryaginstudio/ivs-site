@@ -238,40 +238,7 @@ export const about = {
   ],
 };
 
-// Проекты — заголовки с каталога ivs-corp.ru/projects/. Теги выведены из самих заголовков (отрасль или компетенция).
-export type Project = { title: string; tag: string; href: string };
-export const featuredProjects: Project[] = [
-  {
-    title: "Техническое перевооружение. Система технологического видеонаблюдения на фабрике и производственном узле размола",
-    tag: "Видеонаблюдение",
-    href: "https://ivs-corp.ru/projects/",
-  },
-  {
-    title: "Монтаж и пусконаладка системы разделения холодного и горячего коридоров, модернизация бесперебойного питания ЦОД",
-    tag: "ЦОД",
-    href: "https://ivs-corp.ru/projects/",
-  },
-  {
-    title: "Создание системы бесперебойного питания серверного оборудования энергоснабжающей компании",
-    tag: "Энергетика",
-    href: "https://ivs-corp.ru/projects/",
-  },
-  {
-    title: "Поставка и внедрение в инфраструктуру отечественного NGFW на крупном промышленном предприятии",
-    tag: "Информационная безопасность",
-    href: "https://ivs-corp.ru/projects/",
-  },
-  {
-    title: "Проектирование и строительство сети связи на территории крупного промышленного предприятия",
-    tag: "Сети связи",
-    href: "https://ivs-corp.ru/projects/",
-  },
-  {
-    title: "Создание единого почтового домена для государственных и муниципальных учреждений",
-    tag: "Госсектор",
-    href: "https://ivs-corp.ru/projects/",
-  },
-];
+// Проекты - данные переехали в слой lib/projects (Supabase + локальный снапшот lib/projects-seed.ts).
 export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
 
 // Новости/мероприятия - данные переехали в слой lib/news (Supabase + локальный снапшот lib/news-seed.ts).
