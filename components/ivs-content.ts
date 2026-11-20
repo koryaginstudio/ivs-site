@@ -274,28 +274,7 @@ export const featuredProjects: Project[] = [
 ];
 export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
 
-// Мероприятия — с iteventpermkrai.tilda.ws (контент согласовано влить на новый сайт).
-export type NewsItem = { date: string; kind: string; title: string; href: string };
-export const newsItems: NewsItem[] = [
-  {
-    date: "22 октября 2026",
-    kind: "Мероприятие",
-    title: "ИТ-экосистема предприятия: хранение, защита данных и управление печатью",
-    href: "https://iteventpermkrai.tilda.ws/",
-  },
-  {
-    date: "24 сентября 2026",
-    kind: "Мероприятие",
-    title: "Безопасная инфраструктура: платформы и защита данных",
-    href: "https://iteventpermkrai.tilda.ws/",
-  },
-  {
-    date: "24 августа 2026",
-    kind: "Мероприятие",
-    title: "Без пауз и потерь: актуальные системы питания, хранения и передачи данных",
-    href: "https://iteventpermkrai.tilda.ws/",
-  },
-];
+// Новости/мероприятия - данные переехали в слой lib/news (Supabase + локальный снапшот lib/news-seed.ts).
 export const newsHref = "https://ivs-corp.ru/info/news/";
 
 // Партнёры — официальные логотипы с ivs-corp.ru/company/partners/ (выборка и порядок — от Антона, 20.11).

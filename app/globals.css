@@ -82,3 +82,9 @@ a {
   outline-offset: 2px;
 }
 
+/* фирменное выделение текста - красное вместо системного синего */
+::selection {
+  background: var(--red_main);
+  color: var(--white_text_elements);
+}
+
