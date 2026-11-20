@@ -1617,15 +1617,39 @@
   opacity: 0.8;
 }
 
-/* --- Партнёры: 5×3, цветные логотипы в равных контейнерах, hover - приближение --- */
+/* --- Партнёры: 5×3 на экран, нативный свайп и равные контейнеры логотипов --- */
+
+.partnerTrack {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.partnerTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.partnerTrack:focus-visible {
+  outline: 2px solid var(--red_main);
+  outline-offset: 8px;
+}
 
 .partnerGrid {
+  flex: 0 0 100%;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-8) var(--space-16);
+  min-width: 0;
   margin: 0;
   padding: 0;
   list-style: none;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .partnerItem {
@@ -1648,6 +1672,66 @@
 .partnerLogoCompact {
   width: 110px;
   height: 52px;
+}
+
+.partnerControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  margin-top: var(--space-16);
+}
+
+.partnerPage {
+  color: var(--text-muted);
+  font: 500 13px/20px var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.partnerArrows {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.partnerArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  background: var(--surface-100);
+  color: var(--Dark_text_elements);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-soft),
+    color var(--duration-fast) var(--ease-soft),
+    background-color var(--duration-fast) var(--ease-soft),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.partnerArrow:hover {
+  border-color: var(--red_main);
+  background: var(--red_main);
+  color: var(--white_text_elements);
+}
+
+.partnerArrow:active {
+  transform: scale(0.96);
+}
+
+.partnerArrow:focus-visible {
+  outline: 2px solid var(--red_main);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partnerTrack {
+    scroll-behavior: auto;
+  }
 }
 
 /* --- Новости --- */
