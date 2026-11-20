@@ -18,21 +18,6 @@ function Chevron() {
   );
 }
 
-function PhoneChip() {
-  return (
-    <span className={s.chip} aria-hidden="true">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M6.6 3.5h2.3l1.4 4.1-2 1.4a12.2 12.2 0 0 0 6.7 6.7l1.4-2 4.1 1.4v2.3a2 2 0 0 1-2.1 2A16.6 16.6 0 0 1 4.6 5.6a2 2 0 0 1 2-2.1Z"
-          stroke="currentColor"
-          strokeWidth="1.9"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
-  );
-}
-
 export function Header() {
   const [open, setOpen] = useState<string | null>(null);
   const [sheet, setSheet] = useState(false);
@@ -259,10 +244,6 @@ export function Header() {
           <a href={phone.href} className={s.phone}>
             <span className={s.phoneNum}>{phone.label}</span>
           </a>
-          <a href="#callback" className={s.cta}>
-            <PhoneChip />
-            Заказать звонок
-          </a>
           <button
             type="button"
             className={`${s.iconBtn} ${s.burger}`}
@@ -313,9 +294,8 @@ export function Header() {
             <a href={phone.href} className={s.sheetPhone} tabIndex={sheet ? 0 : -1}>
               {phone.label}
             </a>
-            <a href="#callback" className={s.cta} tabIndex={sheet ? 0 : -1}>
-              <PhoneChip />
-              Заказать звонок
+            <a href="mailto:info@ivs-corp.ru" className={s.sheetMail} tabIndex={sheet ? 0 : -1}>
+              info@ivs-corp.ru
             </a>
           </div>
         </nav>

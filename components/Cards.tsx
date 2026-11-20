@@ -1,11 +1,19 @@
 import { directions } from "@/components/ivs-content";
 import { DIRECTION_ICONS } from "@/components/direction-icons";
+import { SectionHead } from "./SectionHead";
 import s from "../app/home.module.css";
 
 // Карточки направлений — как блоки решений у Cortel: белые, тонкая рамка, иконка акцентного цвета.
 export function Cards() {
   return (
     <section className={s.cards} aria-label="Направления деятельности">
+      <SectionHead
+        index="01"
+        eyebrow="Услуги"
+        title="Направления деятельности"
+        linkHref="https://ivs-corp.ru/services/"
+        linkLabel="Все услуги"
+      />
       <ul className={s.cardGrid}>
         {directions.map((d, i) => (
           <li key={d.label} className={s.reveal} style={{ "--i": 4 + i } as React.CSSProperties}>

@@ -223,3 +223,116 @@ export const stats = [
   { value: "200+", label: "сертифицированных специалистов" },
   { value: `${new Date().getFullYear() - 1990} лет`, label: "на рынке ИТ — с 1990 года" },
 ];
+
+// ================= Главная: блоки ниже hero =================
+// Фактура — с ivs-corp.ru (проекты, цифры, контакты, реквизиты) и iteventpermkrai.tilda.ws (мероприятия).
+
+export const about = {
+  eyebrow: "Компания",
+  title: "Создаём будущее с 1990 года",
+  text: "Компания основана в 1990 году группой научных сотрудников НИИ. Сегодня ИВС — многопрофильный системный интегратор: проектирует, строит и сопровождает ИТ-инфраструктуру, сети, ЦОД и информационные системы предприятий и государственных заказчиков.",
+  href: "https://ivs-corp.ru/company/",
+  numbers: [
+    { value: "480", label: "сотрудников" },
+    { value: "1447", label: "реализованных проектов" },
+    { value: "6000", label: "заказчиков" },
+  ],
+};
+
+// Проекты — заголовки с каталога ivs-corp.ru/projects/. Теги выведены из самих заголовков (отрасль или компетенция).
+export type Project = { title: string; tag: string; href: string };
+export const featuredProjects: Project[] = [
+  {
+    title: "Техническое перевооружение. Система технологического видеонаблюдения на фабрике и производственном узле размола",
+    tag: "Видеонаблюдение",
+    href: "https://ivs-corp.ru/projects/",
+  },
+  {
+    title: "Монтаж и пусконаладка системы разделения холодного и горячего коридоров, модернизация бесперебойного питания ЦОД",
+    tag: "ЦОД",
+    href: "https://ivs-corp.ru/projects/",
+  },
+  {
+    title: "Создание системы бесперебойного питания серверного оборудования энергоснабжающей компании",
+    tag: "Энергетика",
+    href: "https://ivs-corp.ru/projects/",
+  },
+  {
+    title: "Поставка и внедрение в инфраструктуру отечественного NGFW на крупном промышленном предприятии",
+    tag: "Информационная безопасность",
+    href: "https://ivs-corp.ru/projects/",
+  },
+  {
+    title: "Проектирование и строительство сети связи на территории крупного промышленного предприятия",
+    tag: "Сети связи",
+    href: "https://ivs-corp.ru/projects/",
+  },
+  {
+    title: "Создание единого почтового домена для государственных и муниципальных учреждений",
+    tag: "Госсектор",
+    href: "https://ivs-corp.ru/projects/",
+  },
+];
+export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
+
+// Мероприятия — с iteventpermkrai.tilda.ws (контент согласовано влить на новый сайт).
+export type NewsItem = { date: string; kind: string; title: string; href: string };
+export const newsItems: NewsItem[] = [
+  {
+    date: "22 октября 2026",
+    kind: "Мероприятие",
+    title: "ИТ-экосистема предприятия: хранение, защита данных и управление печатью",
+    href: "https://iteventpermkrai.tilda.ws/",
+  },
+  {
+    date: "24 сентября 2026",
+    kind: "Мероприятие",
+    title: "Безопасная инфраструктура: платформы и защита данных",
+    href: "https://iteventpermkrai.tilda.ws/",
+  },
+  {
+    date: "24 августа 2026",
+    kind: "Мероприятие",
+    title: "Без пауз и потерь: актуальные системы питания, хранения и передачи данных",
+    href: "https://iteventpermkrai.tilda.ws/",
+  },
+];
+export const newsHref = "https://ivs-corp.ru/info/news/";
+
+// Партнёры — выборка из списка вендоров ivs-corp.ru/company/partners/ (всего 60+).
+export const partners = [
+  "Лаборатория Касперского",
+  "КриптоПро",
+  "Рутокен",
+  "Код безопасности",
+  "InfoWatch",
+  "Positive Technologies",
+  "UserGate",
+  "Киберпротект",
+  "МойОфис",
+  "BaseAlt",
+  "YADRO",
+  "ELTEX",
+];
+export const partnersHref = "https://ivs-corp.ru/company/partners/";
+
+// Контакты — с ivs-corp.ru/contacts/.
+export const contacts = {
+  phone,
+  email: "info@ivs-corp.ru",
+  address: "Пермь, ул. Тимирязева, 24",
+  offices: [
+    { city: "Пермь", detail: "ул. Тимирязева, 24", tel: "+7 (342) 238-52-00", mail: "info@ivs-corp.ru" },
+    { city: "Березники", detail: "ул. Юбилейная, 46", tel: "+7 (3424) 260-409", mail: "berezniki@ivs-corp.ru" },
+    { city: "Киров", detail: "Октябрьский пр-т, 104, офис 227/2", tel: "+7 (8332) 41-96-03", mail: "kirov@ivs-corp.ru" },
+  ],
+  href: "https://ivs-corp.ru/contacts/",
+};
+
+// Реквизиты — с iteventpermkrai.tilda.ws и футера ivs-corp.ru.
+export const requisites = {
+  name: "ЗАО «ИВС-СЕТИ»",
+  inn: "5902138574",
+  kpp: "590201001",
+  href: "https://ivs-corp.ru/company/requisites/",
+};
