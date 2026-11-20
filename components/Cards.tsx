@@ -8,8 +8,6 @@ export function Cards() {
   return (
     <section className={s.cards} aria-label="Направления деятельности">
       <SectionHead
-        index="01"
-        eyebrow="Услуги"
         title="Направления деятельности"
         linkHref="https://ivs-corp.ru/services/"
         linkLabel="Все услуги"

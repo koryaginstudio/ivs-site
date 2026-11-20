@@ -234,13 +234,17 @@ export function Header() {
           <ul>{nav.map(renderItem)}</ul>
         </nav>
 
+        {/* Открытая поисковая строка вместо иконки-лупы: тянется между меню и телефоном (правка Антона, 20.11).
+            Механика поиска пока не подключена — submit глушим. */}
+        <form className={s.searchField} role="search" onSubmit={(e) => e.preventDefault()}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="2.2" />
+            <path d="m15.5 15.5 5 5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+          </svg>
+          <input className={s.searchInput} type="search" name="q" placeholder="Поиск по сайту" aria-label="Поиск по сайту" />
+        </form>
+
         <div className={s.actions}>
-          <button type="button" className={`${s.iconBtn} ${s.search}`} aria-label="Поиск по сайту">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="2.2" />
-              <path d="m15.5 15.5 5 5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-            </svg>
-          </button>
           <a href={phone.href} className={s.phone}>
             <span className={s.phoneNum}>{phone.label}</span>
           </a>

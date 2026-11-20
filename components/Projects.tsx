@@ -8,9 +8,7 @@ export function Projects() {
   return (
     <section className={s.section} aria-label="Проекты">
       <SectionHead
-        index="03"
-        eyebrow="Проекты"
-        title="Избранные проекты"
+        title="Проекты"
         linkHref={projectsCatalogHref}
         linkLabel="Все проекты"
         aside={

@@ -164,8 +164,48 @@
   transform: scale(0.97);
 }
 
-.search {
+/* открытая поисковая строка: тянется между меню и телефоном, заполняя промежуток */
+.searchField {
+  flex: 1 1 160px;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 16px;
   border: 1px solid var(--hairline);
+  border-radius: var(--radius-12);
+  color: var(--text-muted);
+  cursor: text;
+  transition: border-color var(--duration-fast) var(--ease-soft);
+}
+
+.searchField:focus-within {
+  border-color: var(--line-strong);
+}
+
+.searchField svg {
+  flex: none;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: 400 15px/20px var(--font-sans);
+  color: var(--Dark_text_elements);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+/* убираем нативный крестик у type="search" */
+.searchInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }
 
 .phone {
@@ -1050,8 +1090,10 @@
   .phone:hover .phoneNum {
     color: var(--red_main);
   }
-  .search:hover,
   .burger:hover {
+    border-color: var(--line-strong);
+  }
+  .searchField:hover {
     border-color: var(--line-strong);
   }
   .cta:hover {
@@ -1158,7 +1200,7 @@
     padding: 0 10px;
     font-size: 14px;
   }
-  .actions > .search {
+  .searchField {
     display: none;
   }
   .panel {
@@ -1285,36 +1327,13 @@
   padding: 0 var(--gutter);
 }
 
-/* шапка секции: красный индекс, подпись, заголовок, ссылка справа */
+/* шапка секции: один заголовок (без надзаголовков — правило Антона, 20.11) и ссылка-переход справа */
 .head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-24);
   margin-bottom: var(--space-32);
-}
-
-.headText {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 0;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font: 600 13px/16px var(--font-sans);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.eyebrowIndex {
-  color: var(--red_main);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
 }
 
 .headTitle,
@@ -1357,10 +1376,6 @@
   padding: 64px;
   border-radius: var(--radius-28);
   background: var(--surface-200);
-}
-
-.aboutTitle {
-  margin-top: 12px;
 }
 
 .aboutText {
@@ -1472,11 +1487,11 @@
     transform var(--dur-hover) var(--ease-hover);
 }
 
-/* --- Партнёры: лента без коробок --- */
+/* --- Партнёры: официальные логотипы, ч/б по умолчанию → цвет при наведении --- */
 
 .partnerGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1486,15 +1501,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 96px;
-  padding: 0 var(--space-16);
-  font: 600 16px/22px var(--font-sans);
-  text-align: center;
-  color: var(--Dark_text_elements);
-  opacity: 0.45;
+  min-height: 104px;
+  padding: var(--space-16);
+}
+
+.partnerLogo {
+  max-width: 72%;
+  max-height: 48px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.5;
   transition:
-    opacity var(--duration-fast) var(--ease-soft),
-    color var(--duration-fast) var(--ease-soft);
+    filter var(--duration-fast) var(--ease-soft),
+    opacity var(--duration-fast) var(--ease-soft);
 }
 
 /* --- Новости --- */
@@ -1585,10 +1604,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-
-.contactTitle {
-  margin-top: 12px;
 }
 
 .contactLead {
@@ -1685,7 +1700,7 @@
 
 .footerTop {
   display: grid;
-  grid-template-columns: minmax(220px, 1.2fr) repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(220px, 1.2fr) repeat(4, minmax(0, 1fr));
   gap: var(--space-48) var(--space-32);
 }
 
@@ -1748,6 +1763,12 @@
   transition: color var(--duration-fast) var(--ease-soft);
 }
 
+/* документы-заглушки: приглушены, без наведения и клика */
+.footerLink[data-stub] {
+  color: rgba(255, 255, 255, 0.45);
+  cursor: default;
+}
+
 .footerBottom {
   display: flex;
   flex-wrap: wrap;
@@ -1758,18 +1779,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   font: 400 13px/20px var(--font-sans);
   color: rgba(255, 255, 255, 0.55);
-}
-
-.footerLegal {
-  color: rgba(255, 255, 255, 0.82);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-soft);
-}
-
-.footerLegalDocs {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 
 /* --- Hover новых блоков — только мышь --- */
@@ -1787,7 +1796,8 @@
     color: var(--white_text_elements);
     transform: translate(3px, -3px);
   }
-  .partnerItem:hover {
+  .partnerItem:hover .partnerLogo {
+    filter: grayscale(0);
     opacity: 1;
   }
   .newsCard:hover {
@@ -1807,12 +1817,7 @@
     color: var(--red_main);
   }
   .footerPhone:hover,
-  .footerLegal:hover,
-  .footerLink:hover {
-    color: var(--white_text_elements);
-  }
-  .footerPhone:hover,
-  .footerLink:hover {
+  a.footerLink:hover {
     color: var(--red_light);
   }
 }
@@ -1838,9 +1843,6 @@
   }
   .newsGrid {
     grid-template-columns: 1fr;
-  }
-  .partnerGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1875,9 +1877,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .partnerItem {
-    min-height: 72px;
-    font-size: 14px;
-    line-height: 20px;
+    min-height: 88px;
   }
   .footer {
     margin-top: var(--space-80);

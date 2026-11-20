@@ -8,8 +8,6 @@ export function News() {
   return (
     <section className={s.section} aria-label="Новости и мероприятия">
       <SectionHead
-        index="05"
-        eyebrow="Новости"
         title="Новости и мероприятия"
         linkHref={newsHref}
         linkLabel="Все новости"

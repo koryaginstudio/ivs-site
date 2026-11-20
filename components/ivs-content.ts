@@ -228,8 +228,7 @@ export const stats = [
 // Фактура — с ivs-corp.ru (проекты, цифры, контакты, реквизиты) и iteventpermkrai.tilda.ws (мероприятия).
 
 export const about = {
-  eyebrow: "Компания",
-  title: "Создаём будущее с 1990 года",
+  title: "О компании",
   text: "Компания основана в 1990 году группой научных сотрудников НИИ. Сегодня ИВС — многопрофильный системный интегратор: проектирует, строит и сопровождает ИТ-инфраструктуру, сети, ЦОД и информационные системы предприятий и государственных заказчиков.",
   href: "https://ivs-corp.ru/company/",
   numbers: [
@@ -299,20 +298,19 @@ export const newsItems: NewsItem[] = [
 ];
 export const newsHref = "https://ivs-corp.ru/info/news/";
 
-// Партнёры — выборка из списка вендоров ivs-corp.ru/company/partners/ (всего 60+).
-export const partners = [
-  "Лаборатория Касперского",
-  "КриптоПро",
-  "Рутокен",
-  "Код безопасности",
-  "InfoWatch",
-  "Positive Technologies",
-  "UserGate",
-  "Киберпротект",
-  "МойОфис",
-  "BaseAlt",
-  "YADRO",
-  "ELTEX",
+// Партнёры — официальные логотипы с ivs-corp.ru/company/partners/ (выборка и порядок — от Антона, 20.11).
+// Файлы лежат в /public/partners, ч/б по умолчанию, цвет при наведении — стили в home.module.css.
+export type PartnerLogo = { name: string; logo: string };
+export const partnerLogos: PartnerLogo[] = [
+  { name: "Microsoft", logo: "/partners/microsoft.jpg" },
+  { name: "Acer", logo: "/partners/acer.jpg" },
+  { name: "Adobe", logo: "/partners/adobe.jpg" },
+  { name: "МойОфис", logo: "/partners/myoffice.png" },
+  { name: "Лаборатория Касперского", logo: "/partners/kaspersky.png" },
+  { name: "1С", logo: "/partners/1c.jpg" },
+  { name: "Dr.Web", logo: "/partners/drweb.png" },
+  { name: "D-Link", logo: "/partners/dlink.jpg" },
+  { name: "Positive Technologies", logo: "/partners/positive.jpg" },
 ];
 export const partnersHref = "https://ivs-corp.ru/company/partners/";
 

@@ -7,10 +7,6 @@ export function ContactsBlock() {
     <section className={s.section} aria-label="Контакты">
       <div className={s.contactPanel}>
         <div className={s.contactMain}>
-          <span className={s.eyebrow}>
-            <span className={s.eyebrowIndex}>06</span>
-            Контакты
-          </span>
           <h2 className={s.contactTitle}>Как мы можем помочь вашему бизнесу?</h2>
           <p className={s.contactLead}>
             Позвоните или напишите — ответим на вопросы и подберём решение под вашу задачу.

@@ -1,8 +1,16 @@
 import { nav, phone, contacts, requisites } from "@/components/ivs-content";
-import { Note } from "./Note";
 import s from "../app/home.module.css";
 
 // Футер: тёмная подложка (surface-inverse из ДС), разделы и контакты — как на ivs-corp.ru.
+// Документы — заглушки без ссылок (правка Антона, 20.11): адреса PDF подставим при переносе.
+const legalDocs = [
+  "Политика обработки персональных данных",
+  "Согласие на обработку персональных данных",
+  "Использование cookie",
+  "Реквизиты компании",
+  "Сведения о СОУТ",
+];
+
 export function Footer() {
   const company = nav.find((n) => n.kind === "menu" && n.label === "Компания");
   const services = nav.find((n) => n.kind === "mega");
@@ -61,24 +69,24 @@ export function Footer() {
               Продукты Link для ВКС
             </a>
           </nav>
+
+          <div className={s.footerCol} aria-label="Документы">
+            <span className={s.footerColTitle}>Документы</span>
+            {legalDocs.map((d) => (
+              <span key={d} className={s.footerLink} data-stub="" title="Ссылка появится при переносе документов">
+                {d}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className={s.footerBottom}>
+          {/* год обновляется автоматически, диапазон — от основания компании (1990) */}
           <span>
-            © {new Date().getFullYear()} {requisites.name}
+            © 1990–{new Date().getFullYear()} {requisites.name}
           </span>
           <span>
             ИНН {requisites.inn} · КПП {requisites.kpp}
-          </span>
-          <a href={requisites.href} className={s.footerLegal}>
-            Реквизиты
-          </a>
-          <span className={s.footerLegalDocs}>
-            Политика обработки ПДн · Согласие на обработку ПДн · Сводная ведомость СОУТ
-            <Note id="note-legal" label="Пометка к документам в футере">
-              На старом сайте это ссылки на PDF-документы. Их адреса подставим при переносе — сейчас показаны текстом,
-              чтобы проверить состав.
-            </Note>
           </span>
         </div>
       </div>
