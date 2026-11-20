@@ -244,8 +244,9 @@ export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
 // Новости/мероприятия - данные переехали в слой lib/news (Supabase + локальный снапшот lib/news-seed.ts).
 export const newsHref = "https://ivs-corp.ru/info/news/";
 
-// Партнёры — официальные логотипы с ivs-corp.ru/company/partners/ (выборка и порядок — от Антона, 20.11).
-// Файлы лежат в /public/partners, ч/б по умолчанию, цвет при наведении — стили в home.module.css.
+// Партнёры — официальные логотипы с ivs-corp.ru/company/partners/ (первые 9 - выборка Антона, ещё 6 добавлены 20.11).
+// Файлы в /public/partners обрезаны по контенту (trim пустых полей) - поэтому единая высота в CSS даёт ровный ритм.
+// Всегда в цвете, при наведении - приближение (scale).
 export type PartnerLogo = { name: string; logo: string };
 export const partnerLogos: PartnerLogo[] = [
   { name: "Microsoft", logo: "/partners/microsoft.jpg" },
@@ -257,6 +258,12 @@ export const partnerLogos: PartnerLogo[] = [
   { name: "Dr.Web", logo: "/partners/drweb.png" },
   { name: "D-Link", logo: "/partners/dlink.jpg" },
   { name: "Positive Technologies", logo: "/partners/positive.jpg" },
+  { name: "КриптоПро", logo: "/partners/kriptopro.png" },
+  { name: "Рутокен", logo: "/partners/rutoken.png" },
+  { name: "Код безопасности", logo: "/partners/securitycode.jpg" },
+  { name: "BaseAlt", logo: "/partners/basealt.png" },
+  { name: "Astra Linux", logo: "/partners/astra.png" },
+  { name: "ELTEX", logo: "/partners/eltex.jpg" },
 ];
 export const partnersHref = "https://ivs-corp.ru/company/partners/";
 

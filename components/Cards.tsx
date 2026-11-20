@@ -1,38 +1,53 @@
-import { directions } from "@/components/ivs-content";
+import { nav } from "@/components/ivs-content";
+import { IndustryCard } from "./IndustryCard";
 import { SectionHead } from "./SectionHead";
 import s from "../app/home.module.css";
+import styles from "./IndustryCards.module.css";
 
-// Карточки направлений: слева плейсхолдер 1:1 (под 3D-иконку/фото без фона, добавим позже),
-// справа - заголовок со стрелкой в верхнем углу и текст под ним (правка Антона, 20.11).
+const projects = "https://ivs-corp.ru/projects/";
+const industries = [
+  { icon: "government", label: "Госсектор", filter: 95 },
+  { icon: "oil-gas", label: "Нефть и газ", filter: 96 },
+  { icon: "education", label: "Образование" },
+  { icon: "logistics", label: "Логистика и транспорт", filter: 98 },
+  { icon: "engineering", label: "Машиностроение" },
+  { icon: "medicine", label: "Медицина" },
+  { icon: "commercial", label: "Коммерческий сектор", filter: 101 },
+  { icon: "energy", label: "Энергетика", filter: 102 },
+  { icon: "metallurgy", label: "Металлургия", filter: 103 },
+  { icon: "forestry", label: "Лесная и целлюлозно-бумажная промышленность" },
+  { icon: "chemistry", label: "Химическая промышленность" },
+];
+
 export function Cards() {
+  const services = nav.find(item => item.kind === "mega");
   return (
     <section className={s.cards} aria-label="Направления деятельности">
-      <SectionHead
-        title="Направления деятельности"
-        linkHref="https://ivs-corp.ru/services/"
-        linkLabel="Все услуги"
-      />
+      <header className={styles.intro}>
+        <SectionHead title={"> 10\u00a0направлений деятельности"} linkHref={projects} linkLabel="Все проекты" />
+        <p>
+          Информационные технологии повсюду. За 30 лет мы реализовали более 1400 крупных ИТ проектов и знаем решение многих задач.
+          <br />
+          <strong>мы можем</strong>&nbsp;применить этот опыт к вашему проекту.
+        </p>
+      </header>
       <ul className={s.cardGrid}>
-        {directions.map((d, i) => (
-          <li key={d.label} className={s.reveal} style={{ "--i": 4 + i } as React.CSSProperties}>
-            <a href={d.href} className={s.card}>
-              {/* плейсхолдер 1:1 - сюда ляжет 3D-иконка без фона (object-fit: contain) */}
-              <span className={s.cardMedia} aria-hidden="true" />
-              <span className={s.cardBody}>
-                <span className={s.cardHead}>
-                  <span className={s.cardTitle}>{d.label}</span>
-                  <span className={s.cardArrow} aria-hidden="true">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </span>
-                <span className={s.cardText}>{d.items.slice(0, 3).join(" · ")}</span>
-              </span>
-            </a>
+        {industries.map(({ icon, label, filter }) => (
+          <li key={icon}>
+            <IndustryCard icon={icon} label={label} href={filter ? `${projects}?industries=${filter}` : projects} />
           </li>
         ))}
       </ul>
+      {services?.kind === "mega" && (
+        <div className={styles.services}>
+          <SectionHead title="Услуги" linkHref={services.href} linkLabel="Все услуги" />
+          <ul className={styles.serviceList}>
+            {services.groups.map(group => (
+              <li key={group.href}><a href={group.href}>{group.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

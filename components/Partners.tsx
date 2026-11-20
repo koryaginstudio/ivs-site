@@ -2,7 +2,7 @@ import { partnerLogos, partnersHref } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
 import s from "../app/home.module.css";
 
-// Партнёры: официальные логотипы с ivs-corp.ru/company/partners/ — ч/б по умолчанию, цвет при наведении.
+// Партнёры: официальные логотипы с ivs-corp.ru/company/partners/ - всегда цветные, hover приближает.
 export function Partners() {
   return (
     <section className={s.section} aria-label="Партнёры">
