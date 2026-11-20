@@ -1008,9 +1008,9 @@
 .card {
   height: 100%;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  padding: var(--space-24) var(--space-32) var(--space-32);
+  align-items: center;
+  gap: var(--space-24);
+  padding: var(--space-24);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-20);
   background: var(--surface-100);
@@ -1027,23 +1027,37 @@
   transition-duration: var(--duration-press);
 }
 
-.cardTop {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: var(--space-16);
-}
-
-/* красная линейная иконка прямо на белом, без подложки */
-.cardIcon {
-  display: block;
-  color: var(--red_main);
-  transform-origin: left top;
+/* плейсхолдер 1:1 под 3D-иконку/фото без фона - появится позже, object-fit: contain */
+.cardMedia {
+  flex: none;
+  width: 104px;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-12);
+  background: var(--surface-200);
+  overflow: hidden;
   transition: transform var(--dur-hover) var(--ease-hover);
 }
 
-.cardIcon svg {
+.cardMedia img {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cardBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-16);
 }
 
 .cardArrow {
@@ -1153,8 +1167,8 @@
     box-shadow: var(--shadow-3);
     transform: translateY(-6px) scale(1.03);
   }
-  .card:hover .cardIcon {
-    transform: scale(1.15);
+  .card:hover .cardMedia {
+    transform: scale(1.06);
   }
   .card:hover .cardArrow {
     background: var(--red_main);
@@ -1264,6 +1278,9 @@
   .card {
     padding: var(--space-24);
   }
+  .cardMedia {
+    width: 88px;
+  }
 }
 
 /* ================= Доступность ================= */
@@ -1288,7 +1305,7 @@
   .btn:hover,
   .btn:hover .btnChip,
   .card:hover .cardArrow,
-  .card:hover .cardIcon,
+  .card:hover .cardMedia,
   .stat:hover,
   .stat:hover .statValue,
   .glassScene:hover .heroImg {
