@@ -30,11 +30,11 @@ export function Partners() {
   const trackRef = useRef<HTMLDivElement>(null);
   const targetPage = useRef(0);
   const programmatic = useRef(false);
-  const scrollEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animationFrame = useRef<number | null>(null);
   const [page, setPage] = useState(0);
 
   useEffect(() => () => {
-    if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
   }, []);
 
   const measuredPage = () => {
@@ -43,25 +43,35 @@ export function Partners() {
     return Math.max(0, Math.min(Math.round(track.scrollLeft / track.clientWidth), pages.length - 1));
   };
 
-  const finishScroll = () => {
+  const restoreTrack = (track: HTMLDivElement) => {
+    track.style.scrollSnapType = "";
+    track.style.scrollBehavior = "";
+  };
+
+  const finishScroll = (target: number) => {
+    const track = trackRef.current;
+    animationFrame.current = null;
     programmatic.current = false;
+    if (track) restoreTrack(track);
+    targetPage.current = target;
+    setPage(target);
+  };
+
+  const cancelAnimation = () => {
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
+    animationFrame.current = null;
+    if (!programmatic.current) return;
+    programmatic.current = false;
+    const track = trackRef.current;
+    if (track) restoreTrack(track);
     const actual = measuredPage();
     targetPage.current = actual;
     setPage(actual);
   };
 
-  const scheduleFinish = (delay: number) => {
-    if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
-    scrollEndTimer.current = setTimeout(finishScroll, delay);
-  };
-
   const onScroll = () => {
-    // Во время программной прокрутки промежуточные кадры не меняют выбранную страницу.
-    // Именно это раньше ломало следующий клик по стрелке.
-    if (programmatic.current) {
-      scheduleFinish(140);
-      return;
-    }
+    // Промежуточные кадры не меняют цель следующего клика.
+    if (programmatic.current) return;
     const actual = measuredPage();
     targetPage.current = actual;
     setPage(actual);
@@ -69,16 +79,37 @@ export function Partners() {
 
   const goTo = (direction: number) => {
     const track = trackRef.current;
-    if (!track) return;
+    if (!track?.clientWidth) return;
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
+
     const target = Math.max(0, Math.min(targetPage.current + direction, pages.length - 1));
     targetPage.current = target;
     setPage(target);
 
+    const start = track.scrollLeft;
+    const end = target * track.clientWidth;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    programmatic.current = !reducedMotion;
-    track.scrollTo({ left: target * track.clientWidth, behavior: reducedMotion ? "auto" : "smooth" });
-    if (reducedMotion) finishScroll();
-    else scheduleFinish(700); // резерв, если браузер не отправил scroll после мгновенного перехода
+    track.style.scrollSnapType = "none";
+    track.style.scrollBehavior = "auto";
+
+    if (reducedMotion || start === end) {
+      track.scrollLeft = end;
+      finishScroll(target);
+      return;
+    }
+
+    programmatic.current = true;
+    let startedAt: number | null = null;
+    const duration = 420;
+    const animate = (now: number) => {
+      if (startedAt === null) startedAt = now;
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      track.scrollLeft = start + (end - start) * eased;
+      if (progress < 1) animationFrame.current = requestAnimationFrame(animate);
+      else finishScroll(target);
+    };
+    animationFrame.current = requestAnimationFrame(animate);
   };
 
   return (
@@ -91,6 +122,8 @@ export function Partners() {
         aria-label="Лента партнёров"
         tabIndex={0}
         onScroll={onScroll}
+        onPointerDown={cancelAnimation}
+        onWheel={cancelAnimation}
       >
         {pages.map((partners, pageIndex) => (
           <ul className={s.partnerGrid} key={pageIndex} aria-label={`Страница ${pageIndex + 1} из ${pages.length}`}>

@@ -24,7 +24,7 @@ create policy "news public read" on news
 -- наполнение: снапшот раздела «Новости» ivs-corp.ru от 20.11.2026
 insert into news (slug, title, kind, published_at, image_url, source_url) values
   ('kiberpatrul-v-dele', '"КИБЕРПАТРУЛЬ" в деле', 'news', '2026-04-20', '/news/news-1.jpg', 'https://ivs-corp.ru/info/news/kiberpatrul-v-dele/'),
-  ('s-novym-godom', 'С Новым годом!', 'news', '2025-12-30', '/news/news-2.jpg', 'https://ivs-corp.ru/info/news/s-novym-godom/'),
+  ('s-novym-godom', 'С Новым годом', 'news', '2025-12-30', '/news/news-2.jpg', 'https://ivs-corp.ru/info/news/s-novym-godom/'),
   ('permskiy-kray-perekhodit-na-otechestvennuyu-operatsionnuyu-sistemu-red-os', 'Пермский край переходит на отечественную операционную систему РЕД ОС', 'news', '2025-12-23', '/news/news-3.jpg', 'https://ivs-corp.ru/info/news/permskiy-kray-perekhodit-na-otechestvennuyu-operatsionnuyu-sistemu-red-os/'),
   ('it-channel-news-opublikoval-novost-i-fotoreportazh-o-mezhregionalnom-tsifrovom-forume', 'IT Channel News опубликовал новость и фоторепортаж о Межрегиональном Цифровом Форуме', 'news', '2025-05-14', '/news/news-4.jpg', 'https://ivs-corp.ru/info/news/it-channel-news-opublikoval-novost-i-fotoreportazh-o-mezhregionalnom-tsifrovom-forume/'),
   ('mezhregionalnyy-it-forum-provedut-v-prikame', 'Межрегиональный ИТ-форум проведут в Прикамье', 'news', '2025-03-27', '/news/news-5.jpg', 'https://ivs-corp.ru/info/news/mezhregionalnyy-it-forum-provedut-v-prikame/'),

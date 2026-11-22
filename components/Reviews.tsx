@@ -307,12 +307,12 @@ export function Reviews() {
   const [index, setIndex] = useState(0);
   const targetIndex = useRef(0);
   const programmatic = useRef(false);
-  const scrollEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animationFrame = useRef<number | null>(null);
   const dragState = useRef<{ startX: number; startScroll: number; moved: boolean; dir: number } | null>(null);
   const suppressClick = useRef(false);
 
   useEffect(() => () => {
-    if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
   }, []);
 
   const step = () => {
@@ -330,27 +330,25 @@ export function Reviews() {
     return Math.max(0, Math.min(Math.round(track.scrollLeft / size), reviews.length - 1));
   };
 
-  const finishScroll = () => {
-    if (dragState.current) return;
-    programmatic.current = false;
-    trackRef.current?.removeAttribute("data-dragging");
-    const actual = measuredIndex();
-    targetIndex.current = actual;
-    setIndex(actual);
+  const restoreTrack = (track: HTMLDivElement) => {
+    track.style.scrollSnapType = "";
+    track.style.scrollBehavior = "";
   };
 
-  const scheduleFinish = (delay: number) => {
-    if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
-    scrollEndTimer.current = setTimeout(finishScroll, delay);
+  const finishScroll = (target: number) => {
+    animationFrame.current = null;
+    programmatic.current = false;
+    const track = trackRef.current;
+    if (track) {
+      restoreTrack(track);
+      track.removeAttribute("data-dragging");
+    }
+    targetIndex.current = target;
+    setIndex(target);
   };
 
   const syncIndex = () => {
-    if (dragState.current) return;
-    // Промежуточные кадры smooth-scroll не должны откатывать выбранный индекс.
-    if (programmatic.current) {
-      scheduleFinish(140);
-      return;
-    }
+    if (dragState.current || programmatic.current) return;
     const actual = measuredIndex();
     targetIndex.current = actual;
     setIndex(actual);
@@ -360,14 +358,34 @@ export function Reviews() {
     const track = trackRef.current;
     const size = step();
     if (!track || !size) return;
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
+
     targetIndex.current = target;
     setIndex(target);
-
+    const start = track.scrollLeft;
+    const end = Math.min(target * size, track.scrollWidth - track.clientWidth);
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    programmatic.current = !reducedMotion;
-    track.scrollTo({ left: target * size, behavior: reducedMotion ? "auto" : "smooth" });
-    if (reducedMotion) finishScroll();
-    else scheduleFinish(700);
+    track.style.scrollSnapType = "none";
+    track.style.scrollBehavior = "auto";
+
+    if (reducedMotion || start === end) {
+      track.scrollLeft = end;
+      finishScroll(target);
+      return;
+    }
+
+    programmatic.current = true;
+    let startedAt: number | null = null;
+    const duration = 420;
+    const animate = (now: number) => {
+      if (startedAt === null) startedAt = now;
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      track.scrollLeft = start + (end - start) * eased;
+      if (progress < 1) animationFrame.current = requestAnimationFrame(animate);
+      else finishScroll(target);
+    };
+    animationFrame.current = requestAnimationFrame(animate);
   };
 
   const goTo = (direction: number) => {
@@ -378,7 +396,15 @@ export function Reviews() {
   // перетаскивание ленты мышью: тач-устройства работают нативным свайпом
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") return;
-    dragState.current = { startX: event.clientX, startScroll: trackRef.current?.scrollLeft ?? 0, moved: false, dir: 0 };
+    const track = trackRef.current;
+    if (!track) return;
+    // Останавливаем незавершённую анимацию перед началом жеста.
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
+    animationFrame.current = null;
+    programmatic.current = false;
+    restoreTrack(track);
+    targetIndex.current = measuredIndex();
+    dragState.current = { startX: event.clientX, startScroll: track.scrollLeft, moved: false, dir: 0 };
     // захват указателя ставим только после превышения порога движения,
     // иначе обычный клик по ссылке «Оригинал» съедается захватом
   };
@@ -392,6 +418,8 @@ export function Reviews() {
       state.moved = true;
       suppressClick.current = true;
       track.setAttribute("data-dragging", "");
+      track.style.scrollSnapType = "none";
+      track.style.scrollBehavior = "auto";
       try {
         track.setPointerCapture(event.pointerId);
       } catch {
@@ -419,6 +447,7 @@ export function Reviews() {
     const size = step();
     if (!size) {
       track.removeAttribute("data-dragging");
+      restoreTrack(track);
       return;
     }
     const pos = track.scrollLeft / size;
@@ -426,12 +455,7 @@ export function Reviews() {
       state.dir > 0
         ? Math.min(Math.ceil(pos - 0.001), reviews.length - 1)
         : Math.max(Math.floor(pos + 0.001), 0);
-    setIndex(target);
-    track.scrollTo({ left: target * size, behavior: "smooth" });
-    // snap включаем обратно только после доводки и только если drag не начат заново
-    window.setTimeout(() => {
-      if (!dragState.current) trackRef.current?.removeAttribute("data-dragging");
-    }, 600);
+    animateTo(target);
   };
 
   return (
@@ -509,7 +533,7 @@ export function Reviews() {
           <button
             type="button"
             className={home.partnerArrow}
-            onClick={() => goTo(index - 1)}
+            onClick={() => goTo(-1)}
             disabled={index === 0}
             aria-label="Предыдущий отзыв"
           >
@@ -518,7 +542,7 @@ export function Reviews() {
           <button
             type="button"
             className={home.partnerArrow}
-            onClick={() => goTo(index + 1)}
+            onClick={() => goTo(1)}
             disabled={index === reviews.length - 1}
             aria-label="Следующий отзыв"
           >

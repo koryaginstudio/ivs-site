@@ -23,7 +23,11 @@ export function Cards() {
   return (
     <Reveal as="section" className={s.cards} ariaLabel="Направления деятельности">
       <header className={styles.intro}>
-        <SectionHead title={"> 10\u00a0направлений деятельности"} linkHref={projects} linkLabel="Все проекты" />
+        <SectionHead
+          title={<><span className={s.titleAccent}>&gt; 10</span>&nbsp;направлений деятельности</>}
+          linkHref={projects}
+          linkLabel="Все проекты"
+        />
         <p>
           Информационные технологии повсюду. За 30 лет мы реализовали более 1400 крупных ИТ проектов и знаем решение многих задач.
           <br />

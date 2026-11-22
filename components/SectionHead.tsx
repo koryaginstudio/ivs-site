@@ -7,7 +7,7 @@ export function SectionHead({
   linkLabel,
   aside,
 }: {
-  title: string;
+  title: React.ReactNode;
   linkHref?: string;
   linkLabel?: string;
   aside?: React.ReactNode;

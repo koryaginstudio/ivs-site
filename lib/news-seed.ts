@@ -14,7 +14,7 @@ const newsCards: Omit<NewsPost, "excerpt">[] = [
   },
   {
     slug: "s-novym-godom",
-    title: "С Новым годом!",
+    title: "С Новым годом",
     kind: "news",
     publishedAt: "2025-12-30",
     image: "/news/news-2.jpg",

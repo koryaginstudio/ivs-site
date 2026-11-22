@@ -8,13 +8,21 @@ const PAGE_SIZE = 8;
 const FADE_OUT_MS = 180;
 const SETTLE_MS = 420;
 
+// Из витрины «Все годы» убраны две карточки: у первой неудачное фото (знак видеонаблюдения),
+// у второй нет изображения вовсе. В фильтрах по годам оба проекта по-прежнему показываются.
+const SHOWCASE_HIDE = new Set([
+  "tekhnicheskoe-perevooruzhenie-sistema-tekhnologicheskogo-videonablyudeniya-na-fabrike-i-proizvodstve",
+  "sozdanie-edinogo-pochtovogo-domena-dlya-gosudarstvennykh-i-munitsipalnykh-uchrezhdeniy",
+]);
+
 // Карточки проектов + календарная механика: лента лет со счётчиками под сеткой.
 // Фильтрация мгновенная, на клиенте - данные уже загружены сервером из слоя БД.
 // Смена года идёт в три фазы: старые карточки гаснут, высота сцены плавно
 // перетекает к новой, новые карточки каскадно поднимаются - без скачков вёрстки.
 export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
   const [year, setYear] = useState<number | null>(null);
-  const [shown, setShown] = useState(() => projects.slice(0, PAGE_SIZE));
+  const showcase = useMemo(() => projects.filter((p) => !SHOWCASE_HIDE.has(p.slug)), [projects]);
+  const [shown, setShown] = useState(() => projects.filter((p) => !SHOWCASE_HIDE.has(p.slug)).slice(0, PAGE_SIZE));
   const [phase, setPhase] = useState<"idle" | "out" | "in">("idle");
   const stageRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLUListElement>(null);
@@ -62,7 +70,7 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
     setYear(target);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const list = (target === null ? projects : projects.filter((p) => p.year === target)).slice(0, PAGE_SIZE);
+    const list = (target === null ? showcase : projects.filter((p) => p.year === target)).slice(0, PAGE_SIZE);
     clearTimers();
 
     if (reducedMotion) {

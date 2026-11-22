@@ -2,7 +2,6 @@ import { Reveal } from "./Reveal";
 import { getProjects } from "@/lib/projects";
 import { projectsCatalogHref } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
-import { Note } from "./Note";
 import { ProjectsBrowser } from "./ProjectsBrowser";
 import s from "../app/home.module.css";
 
@@ -13,19 +12,7 @@ export async function Projects() {
 
   return (
     <Reveal as="section" className={s.section} ariaLabel="Проекты">
-      <SectionHead
-        title="Проекты"
-        linkHref={projectsCatalogHref}
-        linkLabel="Все проекты"
-        aside={
-          <Note id="note-projects" label="Пометка к блоку проектов">
-            20 реальных проектов из каталога ivs-corp.ru - с фото, отраслью, годом сдачи и описанием. Ссылки пока
-            ведут на старый сайт. Лента лет - доработанная календарная механика оригинала: вместо выпадающего списка
-            годы с живыми счётчиками. Данные уже идут через слой БД - после ключей Supabase в .env.local список
-            будет редактироваться из админки без правок кода.
-          </Note>
-        }
-      />
+      <SectionHead title="Проекты" linkHref={projectsCatalogHref} linkLabel="Все проекты" />
       <ProjectsBrowser projects={projects} />
     </Reveal>
   );

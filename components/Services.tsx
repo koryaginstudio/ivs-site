@@ -4,7 +4,6 @@ import { Reveal } from "./Reveal";
 import { useEffect, useRef, useState } from "react";
 import { nav } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
-import { Note } from "./Note";
 import s from "../app/home.module.css";
 import styles from "./Services.module.css";
 
@@ -75,18 +74,7 @@ export function Services() {
 
   return (
     <Reveal as="section" id="services" className={`${s.section} ${s.sectionMuted}`} ariaLabel="Услуги">
-      <SectionHead
-        title="Услуги"
-        linkHref={services.href}
-        linkLabel="Все услуги"
-        aside={
-          <Note id="note-services" label="Пометка к блоку услуг">
-            Структура и подуслуги взяты из официального меню ИВС. Для preview использованы стоковые видео
-            (лицензия Pexels, свободное использование). Их можно заменить на съёмку заказчика без
-            изменения механики блока.
-          </Note>
-        }
-      />
+      <SectionHead title="Услуги" linkHref={services.href} linkLabel="Все услуги" />
       <div className={styles.layout}>
         <ol className={styles.list}>
           {services.groups.map((group, index) => {
@@ -128,18 +116,28 @@ export function Services() {
                 >
                   <div className={styles.panelClip}>
                     <div className={styles.panelInner}>
+                      <div className={styles.panelHeading}>
+                        <span>Что входит в направление</span>
+                        <span className={styles.panelCount}>{subserviceLabel(group.items.length)}</span>
+                      </div>
                       <ul className={styles.sublist}>
-                        {group.items.map((item) => (
+                        {group.items.map((item, itemIndex) => (
                           <li key={item.href}>
                             <a href={item.href} tabIndex={isOpen ? 0 : -1}>
-                              {item.label}
+                              <span className={styles.subserviceIndex} aria-hidden="true">
+                                {String(itemIndex + 1).padStart(2, "0")}
+                              </span>
+                              <span>{item.label}</span>
+                              <svg className={styles.subserviceArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
                             </a>
                           </li>
                         ))}
                       </ul>
                       <a className={styles.directionLink} href={group.href} tabIndex={isOpen ? 0 : -1}>
                         Открыть направление
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                           <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </a>

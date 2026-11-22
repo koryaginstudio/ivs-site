@@ -58,15 +58,6 @@ export function Hero({ accent = false }: { accent?: boolean }) {
               <span className={s.blobA} aria-hidden="true" />
               <span className={s.blobB} aria-hidden="true" />
               <img src="/hero/v2-hub.webp" alt="" width={1254} height={1254} className={s.heroImg} />
-              {/* пометка: иллюстрация тестовая */}
-              <div className={s.note}>
-                <button type="button" className={s.noteBtn} aria-label="Об иллюстрации" aria-describedby="v2-illustration-note">
-                  !
-                </button>
-                <span role="tooltip" id="v2-illustration-note" className={s.noteTip}>
-                  Иллюстрация тестовая — добавлена, чтобы показать идею главного экрана. В финальной версии я её заменю.
-                </span>
-              </div>
             </div>
           </div>
         </div>
