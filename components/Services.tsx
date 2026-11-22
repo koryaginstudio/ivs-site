@@ -29,12 +29,53 @@ function subserviceLabel(count: number) {
   return `${count} подуслуг`;
 }
 
+type ServiceGroup = NonNullable<typeof services>["groups"][number];
+
+function ServiceLinks({ group, tabIndex }: { group: ServiceGroup; tabIndex?: number }) {
+  return (
+    <div className={styles.panelInner}>
+      <ul className={styles.sublist}>
+        {group.items.map((item) => (
+          <li key={item.href}>
+            <a href={item.href} tabIndex={tabIndex}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a className={styles.directionLink} href={group.href} tabIndex={tabIndex}>
+        Открыть направление
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
+    </div>
+  );
+}
+
 export function Services() {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(0);
+  const [sideDetails, setSideDetails] = useState(false);
   // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
   const [reducedMotion, setReducedMotion] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const hoverTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => {
+      window.clearTimeout(hoverTimer.current);
+      setSideDetails(query.matches);
+    };
+    update();
+    query.addEventListener("change", update);
+    return () => {
+      query.removeEventListener("change", update);
+      window.clearTimeout(hoverTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -76,11 +117,11 @@ export function Services() {
           </Note>
         }
       />
-      <div className={styles.layout} onMouseLeave={() => setActive(open >= 0 ? open : active)}>
+      <div className={styles.layout} data-side-details={sideDetails}>
         <ol className={styles.list}>
           {services.groups.map((group, index) => {
             const isActive = active === index;
-            const isOpen = open === index;
+            const isOpen = sideDetails ? isActive : open === index;
             const panelId = `service-panel-${index}`;
             const triggerId = `service-trigger-${index}`;
 
@@ -90,19 +131,35 @@ export function Services() {
                 key={group.href}
                 data-active={isActive}
                 data-open={isOpen}
-                onMouseEnter={() => setActive(index)}
               >
                 <button
                   id={triggerId}
                   type="button"
                   className={styles.trigger}
                   aria-expanded={isOpen}
-                  aria-controls={panelId}
-                  aria-label={`${group.label}: ${isOpen ? "скрыть" : "показать"} подуслуги`}
-                  onFocus={() => setActive(index)}
-                  onClick={() => {
+                  aria-controls={sideDetails ? "service-details" : panelId}
+                  aria-label={sideDetails ? group.label : `${group.label}: ${isOpen ? "скрыть" : "показать"} подуслуги`}
+                  onPointerEnter={(event) => {
+                    if (sideDetails && event.pointerType === "mouse") {
+                      window.clearTimeout(hoverTimer.current);
+                      hoverTimer.current = window.setTimeout(() => setActive(index), 110);
+                    }
+                  }}
+                  onPointerLeave={() => window.clearTimeout(hoverTimer.current)}
+                  onFocus={() => {
+                    window.clearTimeout(hoverTimer.current);
                     setActive(index);
-                    setOpen((currentOpen) => (currentOpen === index ? -1 : index));
+                  }}
+                  onClick={(event) => {
+                    window.clearTimeout(hoverTimer.current);
+                    setActive(index);
+                    if (sideDetails) {
+                      if (event.detail === 0) {
+                        window.requestAnimationFrame(() => detailsRef.current?.querySelector("a")?.focus());
+                      }
+                    } else {
+                      setOpen((currentOpen) => (currentOpen === index ? -1 : index));
+                    }
                   }}
                 >
                   <span className={styles.index} aria-hidden="true">
@@ -115,65 +172,59 @@ export function Services() {
                     </svg>
                   </span>
                 </button>
-                <div
-                  id={panelId}
-                  className={styles.panel}
-                  data-open={isOpen}
-                  role="region"
-                  aria-labelledby={triggerId}
-                  aria-hidden={!isOpen}
-                >
-                  <div className={styles.panelClip}>
-                    <div className={styles.panelInner}>
-                      <ul className={styles.sublist}>
-                        {group.items.map((item) => (
-                          <li key={item.href}>
-                            <a href={item.href} tabIndex={isOpen ? 0 : -1}>
-                              {item.label}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                      <a className={styles.directionLink} href={group.href} tabIndex={isOpen ? 0 : -1}>
-                        Открыть направление
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </a>
+                {!sideDetails && (
+                  <div
+                    id={panelId}
+                    className={styles.panel}
+                    data-open={isOpen}
+                    role="region"
+                    aria-labelledby={triggerId}
+                    aria-hidden={!isOpen}
+                  >
+                    <div className={styles.panelClip}>
+                      <ServiceLinks group={group} tabIndex={isOpen ? 0 : -1} />
                     </div>
                   </div>
-                </div>
+                )}
               </li>
             );
           })}
         </ol>
 
-        <figure className={styles.preview}>
-          <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
-            <video
-              key={active}
-              ref={videoRef}
-              className={styles.video}
-              src={preview.video}
-              poster={preview.poster}
-              muted
-              loop
-              playsInline
-              autoPlay={!reducedMotion}
-              preload="metadata"
-              aria-label={`${current.label}. ${preview.project}`}
-            />
-            <span className={styles.mediaIndex} aria-hidden="true">
-              {String(active + 1).padStart(2, "0")} / {String(services.groups.length).padStart(2, "0")}
-            </span>
-          </div>
-          <figcaption className={styles.caption} aria-live="polite">
-            <span className={styles.captionTitle}>{current.label}</span>
-            <span className={styles.captionMeta}>
-              {subserviceLabel(current.items.length)} · {preview.project}
-            </span>
-          </figcaption>
-        </figure>
+        <div className={styles.preview}>
+          {sideDetails && (
+            <div id="service-details" ref={detailsRef} className={styles.details} role="region" aria-labelledby={`service-trigger-${active}`}>
+              <h3 className={styles.detailsTitle}>{current.label}</h3>
+              <ServiceLinks group={current} />
+            </div>
+          )}
+          <figure className={styles.figure}>
+            <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
+              <video
+                key={active}
+                ref={videoRef}
+                className={styles.video}
+                src={preview.video}
+                poster={preview.poster}
+                muted
+                loop
+                playsInline
+                autoPlay={!reducedMotion}
+                preload="metadata"
+                aria-label={`${current.label}. ${preview.project}`}
+              />
+              <span className={styles.mediaIndex} aria-hidden="true">
+                {String(active + 1).padStart(2, "0")} / {String(services.groups.length).padStart(2, "0")}
+              </span>
+            </div>
+            <figcaption className={styles.caption} aria-live="polite">
+              <span className={styles.captionTitle}>{current.label}</span>
+              <span className={styles.captionMeta}>
+                {subserviceLabel(current.items.length)} · {preview.project}
+              </span>
+            </figcaption>
+          </figure>
+        </div>
       </div>
     </section>
   );
