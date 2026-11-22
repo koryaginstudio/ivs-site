@@ -9,8 +9,9 @@ const defaultFrameCount = 72;
 const updatedAssets: Readonly<Record<string, { filename: string; frames: number }>> = {
   government: { filename: "government-large-flag", frames: 72 },
   logistics: { filename: "logistics-bed-cycle", frames: 39 },
+  "chrome-question": { filename: "chrome-question", frames: 72 },
 };
-const fullTurnIcons = new Set(["oil-gas", "energy"]);
+const fullTurnIcons = new Set(["oil-gas", "energy", "chrome-question"]);
 const durations: Readonly<Record<string, number>> = {
   government: 1640,
   logistics: 1280,
@@ -18,6 +19,7 @@ const durations: Readonly<Record<string, number>> = {
   medicine: 1800,
   commercial: 1940,
   forestry: 1940,
+  "chrome-question": 1600,
 };
 
 // Ease the ends while keeping the middle of the sprite close to its original timing.
@@ -28,7 +30,12 @@ function easedProgress(time: number) {
   return (time - ramp / 2) / (1 - ramp);
 }
 
-export function IndustryCard({ icon, label, href }: { icon: string; label: string; href: string }) {
+export function IndustryCard({ icon, label, href, description }: {
+  icon: string;
+  label: string;
+  href: string;
+  description?: string;
+}) {
   const sprite = useRef<HTMLSpanElement>(null);
   const animation = useRef(0);
   const loading = useRef<Promise<HTMLImageElement> | null>(null);
@@ -115,7 +122,7 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
   }
 
   return (
-    <a href={href} className={`${s.card} ${styles.industryCard}`}
+    <a href={href} className={`${s.card} ${styles.industryCard}${description ? ` ${styles.ctaCard}` : ""}`}
       onPointerEnter={event => { if (event.pointerType !== "touch") void spin(event.currentTarget); }}
       onFocus={event => { if (event.currentTarget.matches(":focus-visible")) void spin(event.currentTarget); }}>
       <span className={`${s.cardMedia} ${styles.media}`} aria-hidden="true">
@@ -124,8 +131,15 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
       </span>
       <span className={s.cardBody}>
         <span className={s.cardHead}>
-          <span className={s.cardTitle}>{label}</span>
-          <span className={s.cardArrow} aria-hidden="true">
+          {description ? (
+            <span className={styles.ctaBody}>
+              <span className={styles.ctaTitle}>{label}</span>
+              <span className={styles.ctaSub}>{description}</span>
+            </span>
+          ) : (
+            <span className={s.cardTitle}>{label}</span>
+          )}
+          <span className={description ? styles.ctaArrow : s.cardArrow} aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
