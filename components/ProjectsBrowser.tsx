@@ -1,15 +1,24 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ProjectPost } from "@/lib/projects";
 import s from "../app/home.module.css";
 
 const PAGE_SIZE = 6;
+const FADE_OUT_MS = 180;
+const SETTLE_MS = 420;
 
 // Карточки проектов + календарная механика: лента лет со счётчиками под сеткой.
 // Фильтрация мгновенная, на клиенте - данные уже загружены сервером из слоя БД.
+// Смена года идёт в три фазы: старые карточки гаснут, высота сцены плавно
+// перетекает к новой, новые карточки каскадно поднимаются - без скачков вёрстки.
 export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
   const [year, setYear] = useState<number | null>(null);
+  const [shown, setShown] = useState(() => projects.slice(0, PAGE_SIZE));
+  const [phase, setPhase] = useState<"idle" | "out" | "in">("idle");
+  const stageRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLUListElement>(null);
+  const timers = useRef<number[]>([]);
 
   // годы по убыванию со счётчиками проектов
   const years = useMemo(() => {
@@ -17,11 +26,6 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
     for (const p of projects) map.set(p.year, (map.get(p.year) ?? 0) + 1);
     return [...map.entries()].sort((a, b) => b[0] - a[0]);
   }, [projects]);
-
-  const visible = useMemo(
-    () => (year === null ? projects : projects.filter((p) => p.year === year)).slice(0, PAGE_SIZE),
-    [projects, year],
-  );
 
   // Узлы таймлайна: «Все годы» + годы по убыванию. Активный узел ведёт красную заливку линии.
   const nodes = useMemo(
@@ -37,30 +41,81 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
   const trackInset = `${50 / n}%`;
   const fillWidth = n > 1 && activeIndex > 0 ? `${(activeIndex / (n - 1)) * 100}%` : "0%";
 
+  const clearTimers = () => {
+    timers.current.forEach((id) => window.clearTimeout(id));
+    timers.current = [];
+  };
+
+  // новые карточки смонтированы - меряем их высоту после коммита DOM
+  // и плавно тянем сцену к ней; до этого момента сцена держит старую высоту
+  useEffect(() => {
+    if (phase !== "in") return;
+    const stage = stageRef.current;
+    const grid = gridRef.current;
+    if (stage && grid) stage.style.height = `${grid.offsetHeight}px`;
+  }, [phase, shown]);
+
+  const selectYear = (next: number | null) => {
+    const target = next === null || year === next ? null : next;
+    setYear(target);
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const list = (target === null ? projects : projects.filter((p) => p.year === target)).slice(0, PAGE_SIZE);
+    clearTimers();
+
+    if (reducedMotion) {
+      setShown(list);
+      setPhase("idle");
+      return;
+    }
+
+    // фиксируем текущую высоту, чтобы она анимировалась, а не прыгала
+    const stage = stageRef.current;
+    const grid = gridRef.current;
+    if (stage && grid) stage.style.height = `${grid.offsetHeight}px`;
+
+    setPhase("out");
+    timers.current.push(
+      window.setTimeout(() => {
+        setShown(list);
+        setPhase("in");
+        timers.current.push(
+          window.setTimeout(() => {
+            // возвращаем auto - сцена снова резиновая под адаптив
+            if (stageRef.current) stageRef.current.style.height = "";
+            setPhase("idle");
+          }, SETTLE_MS),
+        );
+      }, FADE_OUT_MS),
+    );
+  };
+
   return (
     <>
-      <ul className={s.projGrid} key={year ?? "all"}>
-        {visible.map((p, i) => (
-          <li key={p.slug} style={{ "--i": i } as React.CSSProperties}>
-            <a href={p.sourceUrl} className={s.projCard}>
-              <span className={s.projMedia}>
-                {p.image ? <img src={p.image} alt="" loading="lazy" /> : null}
-              </span>
-              <span className={s.projMeta}>
-                {p.industry ? <span className={s.projIndustry}>{p.industry}</span> : null}
-                <span className={s.projYear}>{p.year}</span>
-              </span>
-              <span className={s.projCardTitle}>{p.title}</span>
-              {p.description ? <span className={s.projDesc}>{p.description}</span> : null}
-              <span className={s.projArrow} aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div ref={stageRef} className={s.projStage} data-phase={phase}>
+        <ul ref={gridRef} className={s.projGrid}>
+          {shown.map((p, i) => (
+            <li key={p.slug} style={{ "--i": i } as React.CSSProperties}>
+              <a href={p.sourceUrl} className={s.projCard}>
+                <span className={s.projMedia}>
+                  {p.image ? <img src={p.image} alt="" loading="lazy" /> : null}
+                </span>
+                <span className={s.projMeta}>
+                  {p.industry ? <span className={s.projIndustry}>{p.industry}</span> : null}
+                  <span className={s.projYear}>{p.year}</span>
+                </span>
+                <span className={s.projCardTitle}>{p.title}</span>
+                {p.description ? <span className={s.projDesc}>{p.description}</span> : null}
+                <span className={s.projArrow} aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Календарная механика: таймлайн с точками-узлами и красной заливкой до активного года.
           На mobile лента прокручивается горизонтально, ширина узлов сохраняется. */}
@@ -75,7 +130,7 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
               type="button"
               className={s.timelineNode}
               data-active={year === node.value || undefined}
-              onClick={() => setYear(node.value === null || year === node.value ? null : node.value)}
+              onClick={() => selectYear(node.value)}
               aria-pressed={year === node.value}
             >
               <span className={s.timelineYear}>{node.label}</span>
