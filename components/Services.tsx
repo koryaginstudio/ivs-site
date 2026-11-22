@@ -11,14 +11,14 @@ import styles from "./Services.module.css";
 const services = nav.find((item) => item.kind === "mega");
 
 const previews = [
-  { video: "/services/complex-projects-v2.webm", poster: "/services/complex-projects-v2.jpg", project: "Стройплощадка и инженеры" },
-  { video: "/services/software-v2.webm", poster: "/services/software-v2.jpg", project: "Команда разработки" },
-  { video: "/services/infrastructure-v2.webm", poster: "/services/infrastructure-v2.jpg", project: "Серверный узел" },
-  { video: "/services/security-v2.webm", poster: "/services/security-v2.jpg", project: "Центр мониторинга ИБ" },
-  { video: "/services/telecom-v2.webm", poster: "/services/telecom-v2.jpg", project: "Сетевое оборудование" },
-  { video: "/services/engineering-v2.webm", poster: "/services/engineering-v2.jpg", project: "Инженерные системы" },
-  { video: "/services/support-v2.webm", poster: "/services/support-v2.jpg", project: "Служба поддержки" },
-  { video: "/services/supply-v2.webm", poster: "/services/supply-v2.jpg", project: "Склад и логистика" },
+  { video: "/services/complex-projects-v3.webm", poster: "/services/complex-projects-v3.jpg", project: "Стройплощадка и инженеры" },
+  { video: "/services/software-v3.webm", poster: "/services/software-v3.jpg", project: "Команда разработки" },
+  { video: "/services/infrastructure-v3.webm", poster: "/services/infrastructure-v3.jpg", project: "Серверный узел" },
+  { video: "/services/security-v3.webm", poster: "/services/security-v3.jpg", project: "Центр мониторинга ИБ" },
+  { video: "/services/telecom-v3.webm", poster: "/services/telecom-v3.jpg", project: "Сетевое оборудование" },
+  { video: "/services/engineering-v3.webm", poster: "/services/engineering-v3.jpg", project: "Инженерные системы" },
+  { video: "/services/support-v3.webm", poster: "/services/support-v3.jpg", project: "Служба поддержки" },
+  { video: "/services/supply-v3.webm", poster: "/services/supply-v3.jpg", project: "Склад и логистика" },
 ];
 
 function subserviceLabel(count: number) {
