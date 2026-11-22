@@ -29,7 +29,6 @@
   position: absolute;
   inset: 0;
   visibility: hidden;
-  background-size: 900% 800%;
   background-repeat: no-repeat;
 }
 .arrow {

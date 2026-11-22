@@ -1,58 +1,77 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import s from "../app/home.module.css";
 import styles from "./IndustryCards.module.css";
 
-const frameCount = 72;
-const assetVersion = 7;
 const columns = 9;
-const rows = frameCount / columns;
+const defaultFrameCount = 72;
+const updatedAssets: Readonly<Record<string, { filename: string; frames: number }>> = {
+  government: { filename: "government-large-flag", frames: 72 },
+  logistics: { filename: "logistics-bed-cycle", frames: 39 },
+};
 const fullTurnIcons = new Set(["oil-gas", "energy"]);
 const durations: Readonly<Record<string, number>> = {
   government: 1640,
-  logistics: 2080,
+  logistics: 1280,
   engineering: 2140,
   medicine: 1800,
   commercial: 1940,
   forestry: 1940,
 };
 
-// Speed peaks halfway through the turn and falls gradually to zero at both ends.
-function turnProgress(time: number) {
-  return time ** 4 * (35 - 84 * time + 70 * time ** 2 - 20 * time ** 3);
+// Ease the ends while keeping the middle of the sprite close to its original timing.
+function easedProgress(time: number) {
+  const ramp = 0.1;
+  if (time < ramp) return time ** 2 / (2 * ramp * (1 - ramp));
+  if (time > 1 - ramp) return 1 - (1 - time) ** 2 / (2 * ramp * (1 - ramp));
+  return (time - ramp / 2) / (1 - ramp);
 }
 
 export function IndustryCard({ icon, label, href }: { icon: string; label: string; href: string }) {
   const sprite = useRef<HTMLSpanElement>(null);
   const animation = useRef(0);
-  const loading = useRef<Promise<void> | null>(null);
+  const loading = useRef<Promise<HTMLImageElement> | null>(null);
   const playing = useRef(false);
   const mounted = useRef(false);
   const directory = "/industry-icons";
-  const fullTurn = fullTurnIcons.has(icon);
+  const asset = updatedAssets[icon];
+  const filename = asset?.filename ?? icon;
+  const frameCount = asset?.frames ?? defaultFrameCount;
+  const rows = Math.ceil(frameCount / columns);
   const duration = durations[icon] ?? 1440;
-  const animationUrl = `${directory}/${icon}-spin.webp?v=${assetVersion}`;
+  const version = asset ? "" : "?v=7";
+  const stillUrl = `${directory}/${filename}.webp${version}`;
+  const animationUrl = `${directory}/${filename}-spin.webp${version}`;
 
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-      cancelAnimationFrame(animation.current);
-    };
-  }, []);
-
-  function loadSprite() {
+  const loadSprite = useCallback(() => {
     if (!loading.current) {
       const image = new Image();
       image.src = animationUrl;
-      loading.current = image.decode().catch(error => {
+      loading.current = image.decode().then(() => image).catch(error => {
         loading.current = null;
         throw error;
       });
     }
     return loading.current;
-  }
+  }, [animationUrl]);
+
+  useEffect(() => {
+    mounted.current = true;
+    const layer = sprite.current;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || !matchMedia("(any-hover: hover) and (prefers-reduced-motion: no-preference)").matches) return;
+      observer.disconnect();
+      void loadSprite().catch(() => { /* Retry on interaction. */ });
+    }, { rootMargin: "160px" });
+
+    if (layer) observer.observe(layer);
+    return () => {
+      mounted.current = false;
+      observer.disconnect();
+      cancelAnimationFrame(animation.current);
+    };
+  }, [loadSprite]);
 
   async function spin(trigger: HTMLElement) {
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -72,22 +91,27 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
       return;
     }
 
-    const start = performance.now();
+    let start: number | undefined;
+    const fullTurn = fullTurnIcons.has(icon);
     layer.style.backgroundImage = `url("${animationUrl}")`;
+    layer.style.backgroundSize = `${columns * 100}% ${rows * 100}%`;
+    layer.style.backgroundPosition = "0% 0%";
     layer.parentElement?.setAttribute("data-spinning", "true");
-    function tick(now: number) {
+
+    const tick = (now: number) => {
+      start ??= now;
       const progress = Math.min((now - start) / duration, 1);
-      if (!layer) return;
       if (progress >= 1 || reducedMotion.matches) {
         layer.parentElement?.removeAttribute("data-spinning");
         playing.current = false;
         return;
       }
-      const frame = Math.round((fullTurn ? turnProgress(progress) : progress) * frameCount) % frameCount;
+      const position = fullTurn ? (1 - Math.cos(Math.PI * progress)) / 2 : easedProgress(progress);
+      const frame = Math.min(Math.floor(position * frameCount), frameCount - 1);
       layer.style.backgroundPosition = `${(frame % columns) / (columns - 1) * 100}% ${Math.floor(frame / columns) / (rows - 1) * 100}%`;
       animation.current = requestAnimationFrame(tick);
-    }
-    tick(start);
+    };
+    animation.current = requestAnimationFrame(tick);
   }
 
   return (
@@ -95,7 +119,7 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
       onPointerEnter={event => { if (event.pointerType !== "touch") void spin(event.currentTarget); }}
       onFocus={event => { if (event.currentTarget.matches(":focus-visible")) void spin(event.currentTarget); }}>
       <span className={`${s.cardMedia} ${styles.media}`} aria-hidden="true">
-        <img src={`${directory}/${icon}.webp?v=${assetVersion}`} width={224} height={224} alt="" loading="lazy" />
+        <img src={stillUrl} width={224} height={224} alt="" loading="lazy" />
         <span ref={sprite} className={styles.sprite} />
       </span>
       <span className={s.cardBody}>
