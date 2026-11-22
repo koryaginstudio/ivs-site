@@ -1527,6 +1527,11 @@
     transform 170ms var(--ease-out);
 }
 
+/* До 1920px показываем 6 проектов, на широких экранах открываем ещё 2. */
+.projGrid > li:nth-child(n + 7) {
+  display: none;
+}
+
 /* Сцена сетки: плавная высота между состояниями «год А» и «год Б» */
 .projStage {
   position: relative;
@@ -1899,7 +1904,8 @@
 
 .newsGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* четыре карточки в ряд: витрина из четырёх материалов */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-16);
   margin: 0;
   padding: 0;
@@ -2273,6 +2279,9 @@
   .footerTop {
     grid-template-columns: 1fr 1fr;
   }
+  .newsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 940px) {
@@ -2282,9 +2291,6 @@
     gap: var(--space-32);
     padding: var(--space-32);
   }
-  .newsGrid {
-    grid-template-columns: 1fr;
-  }
   .projGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2293,6 +2299,9 @@
 @media (max-width: 640px) {
   .hero {
     padding-bottom: var(--space-32);
+  }
+  .newsGrid {
+    grid-template-columns: 1fr;
   }
   .cards,
   .section {
@@ -2693,6 +2702,9 @@
   .projGrid,
   .newsGrid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .projGrid > li:nth-child(n + 7) {
+    display: block;
   }
 }
 

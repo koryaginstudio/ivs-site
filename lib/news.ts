@@ -67,6 +67,40 @@ export async function getLatestNews(limit = 3): Promise<NewsPost[]> {
   return [...newsSeed].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1)).slice(0, limit);
 }
 
+async function fetchFeaturedFromSupabase(slugs: string[]): Promise<NewsPost[]> {
+  const { createClient } = await import("@supabase/supabase-js");
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+  const { data, error } = await supabase
+    .from("news")
+    .select("slug, title, kind, published_at, image_url, source_url")
+    .eq("is_published", true)
+    .in("slug", slugs);
+  if (error) throw error;
+  const rows = (data as NewsRow[]).map(fromRow);
+  return orderBySlugs(rows, slugs);
+}
+
+const orderBySlugs = (pool: NewsPost[], slugs: string[]): NewsPost[] =>
+  slugs
+    .map((slug) => pool.find((n) => n.slug === slug))
+    .filter((n): n is NewsPost => !!n);
+
+/** Витрина главной: выбранные редакцией материалы в заданном порядке. */
+export async function getFeaturedNews(slugs: string[]): Promise<NewsPost[]> {
+  if (hasSupabase) {
+    try {
+      const rows = await fetchFeaturedFromSupabase(slugs);
+      if (rows.length === slugs.length) return rows;
+    } catch (e) {
+      console.warn("[news] Supabase недоступен, отдаю локальный снапшот:", (e as Error).message);
+    }
+  }
+  return orderBySlugs(newsSeed, slugs);
+}
+
 const dateFmt = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" });
 
 export const formatNewsDate = (iso: string) => dateFmt.format(new Date(iso));

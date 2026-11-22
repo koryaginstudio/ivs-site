@@ -162,9 +162,6 @@ export function Services() {
               preload="metadata"
               aria-label={`${current.label}. ${preview.project}`}
             />
-            <span className={styles.mediaIndex} aria-hidden="true">
-              {String(active + 1).padStart(2, "0")} / {String(services.groups.length).padStart(2, "0")}
-            </span>
           </div>
           <figcaption className={styles.caption} aria-live="polite">
             <span className={styles.captionTitle}>{current.label}</span>

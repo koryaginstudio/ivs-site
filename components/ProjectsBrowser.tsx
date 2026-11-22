@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ProjectPost } from "@/lib/projects";
 import s from "../app/home.module.css";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
 const FADE_OUT_MS = 180;
 const SETTLE_MS = 420;
 
