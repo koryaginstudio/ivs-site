@@ -111,7 +111,7 @@ export const nav: NavItem[] = [
     ],
   },
   { kind: "link", label: "Каталог проектов", href: "https://ivs-corp.ru/projects/" },
-  { kind: "link", label: "Новости", href: "https://ivs-corp.ru/info/news/" },
+  { kind: "link", label: "Новости", href: "/info/news/" },
   { kind: "link", label: "Контакты", href: "https://ivs-corp.ru/contacts/" },
   {
     kind: "menu",
@@ -242,7 +242,7 @@ export const about = {
 export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
 
 // Новости/мероприятия - данные переехали в слой lib/news (Supabase + локальный снапшот lib/news-seed.ts).
-export const newsHref = "https://ivs-corp.ru/info/news/";
+export const newsHref = "/info/news/";
 
 // Партнёры - все 61 вендор с официальной страницы ИВС. Первые 15 сохраняют согласованный порядок.
 // Данные и оптический размер логотипов генерируются scripts/sync-partners.py.

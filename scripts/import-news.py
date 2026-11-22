@@ -261,4 +261,8 @@ def main() -> None:
         + "\n",
         encoding="utf-8",
     )
-    print(f"Готово: {CONTENT_PATH.relative_to(ROO
+    print(f"Готово: {CONTENT_PATH.relative_to(ROOT)} и {MIGRATION_PATH.relative_to(ROOT)}")
+
+
+if __name__ == "__main__":
+    main()

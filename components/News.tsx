@@ -1,8 +1,8 @@
 import { Reveal } from "./Reveal";
-import { getFeaturedNews, formatNewsDate, kindLabel } from "@/lib/news";
+import { getFeaturedNews } from "@/lib/news";
+import { formatNewsDate, kindLabel, newsItemHref } from "@/lib/news-format";
 import { newsHref } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
-import { Note } from "./Note";
 import s from "../app/home.module.css";
 
 // Витрина главной: четыре выбранных материала (не просто последние по дате).
@@ -20,22 +20,11 @@ export async function News() {
 
   return (
     <Reveal as="section" className={s.section} ariaLabel="Новости и мероприятия">
-      <SectionHead
-        title="Новости и мероприятия"
-        linkHref={newsHref}
-        linkLabel="Все новости"
-        aside={
-          <Note id="note-news" label="Пометка к блоку новостей">
-            Реальные материалы из раздела «Новости» ivs-corp.ru, ссылки пока ведут на старый сайт. Лента уже
-            подключена к слою данных: как только в .env.local появятся ключи Supabase, карточки пойдут из таблицы
-            news - сейчас работает локальный снапшот. Мероприятия с tilda заведём туда же с пометкой «Мероприятие».
-          </Note>
-        }
-      />
+      <SectionHead title="Новости и мероприятия" linkHref={newsHref} linkLabel="Все новости" />
       <ul className={s.newsGrid}>
         {items.map((n) => (
           <li key={n.slug}>
-            <a href={n.sourceUrl} className={s.newsCard}>
+            <a href={newsItemHref(n.slug)} className={s.newsCard}>
               <span className={s.newsMedia}>
                 {n.image ? <img src={n.image} alt="" loading="lazy" /> : null}
               </span>

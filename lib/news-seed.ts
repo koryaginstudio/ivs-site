@@ -1,8 +1,9 @@
 import type { NewsPost } from "./news";
+import { newsContent } from "./news-content";
 
-// Локальный снапшот раздела «Новости» ivs-corp.ru (снят 20.11.2026) - работает, пока не подключён Supabase.
-// Эти же записи - в supabase/migrations/0001_news.sql для заливки в БД.
-export const newsSeed: NewsPost[] = [
+// Локальный снапшот раздела «Новости» ivs-corp.ru - резерв для предпросмотра без Supabase.
+// Полные тексты и оригинальные обложки собраны scripts/import-news.py.
+const newsCards: Omit<NewsPost, "excerpt">[] = [
   {
     slug: "kiberpatrul-v-dele",
     title: "\"КИБЕРПАТРУЛЬ\" в деле",
@@ -148,3 +149,9 @@ export const newsSeed: NewsPost[] = [
     sourceUrl: "https://ivs-corp.ru/info/news/podpisano-trekhstoronnee-soglashenie-o-sotrudnichestve-i-vzaimodeystvii/",
   },
 ];
+
+export const newsSeed: NewsPost[] = newsCards.map((item) => ({
+  ...item,
+  image: newsContent[item.slug]?.image ?? item.image,
+  excerpt: newsContent[item.slug]?.excerpt ?? "",
+}));

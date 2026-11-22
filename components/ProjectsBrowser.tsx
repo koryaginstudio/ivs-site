@@ -87,7 +87,7 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
       const pin = () => {
         if (!cancelled) {
           const delta = timeline.getBoundingClientRect().top - initialTop;
-          if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+          if (Math.abs(delta) > 0.5) window.scrollBy({ top: delta, behavior: "instant" });
         }
         if (!cancelled && performance.now() - startedAt < 1200) raf = requestAnimationFrame(pin);
       };

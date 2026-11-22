@@ -1,10 +1,10 @@
 import { newsSeed } from "./news-seed";
+import { newsContent } from "./news-content";
 
 // ================= Слой данных новостей =================
-// Сейчас: Supabase (Postgres), если заданы NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY
-// в .env.local - иначе локальный снапшот из lib/news-seed.ts.
-// Переезд на локальную SQL заказчика: добавить сюда клиент (pg/mysql) и ветку по NEWS_DB=local,
-// формат NewsPost и SQL-схема (supabase/migrations/0001_news.sql) при этом не меняются.
+// Основной источник: Supabase (Postgres), если заданы NEXT_PUBLIC_SUPABASE_URL
+// и NEXT_PUBLIC_SUPABASE_ANON_KEY. Локальный снапшот нужен только для предпросмотра
+// без ключей и как аварийный резерв при временной недоступности БД.
 
 export type NewsKind = "news" | "event";
 
@@ -12,9 +12,14 @@ export type NewsPost = {
   slug: string;
   title: string;
   kind: NewsKind;
-  publishedAt: string; // ISO date
+  publishedAt: string;
   image: string | null;
   sourceUrl: string;
+  excerpt: string;
+};
+
+export type NewsArticle = NewsPost & {
+  contentHtml: string;
 };
 
 type NewsRow = {
@@ -23,8 +28,16 @@ type NewsRow = {
   kind: NewsKind;
   published_at: string;
   image_url: string | null;
-  source_url: string;
+  source_url: string | null;
+  excerpt: string | null;
 };
+
+type NewsArticleRow = NewsRow & {
+  content_html: string | null;
+};
+
+const SUMMARY_SELECT = "slug, title, kind, published_at, image_url, source_url, excerpt";
+const ARTICLE_SELECT = `${SUMMARY_SELECT}, content_html`;
 
 const fromRow = (r: NewsRow): NewsPost => ({
   slug: r.slug,
@@ -32,68 +45,73 @@ const fromRow = (r: NewsRow): NewsPost => ({
   kind: r.kind,
   publishedAt: r.published_at,
   image: r.image_url,
-  sourceUrl: r.source_url,
+  sourceUrl: r.source_url ?? "",
+  excerpt: r.excerpt ?? "",
 });
 
-const hasSupabase =
+const fromArticleRow = (r: NewsArticleRow): NewsArticle => ({
+  ...fromRow(r),
+  contentHtml: r.content_html ?? "",
+});
+
+const hasSupabase = () =>
   !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-async function fetchFromSupabase(limit: number): Promise<NewsPost[]> {
+async function supabaseClient() {
   const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
   );
-  const { data, error } = await supabase
-    .from("news")
-    .select("slug, title, kind, published_at, image_url, source_url")
-    .eq("is_published", true)
-    .order("published_at", { ascending: false })
-    .limit(limit);
-  if (error) throw error;
-  return (data as NewsRow[]).map(fromRow);
 }
 
-/** Последние материалы для главной/раздела. При любой ошибке БД - тихий откат на снапшот. */
+const sortByDate = (items: NewsPost[]) =>
+  [...items].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+
+const articleFromSeed = (slug: string): NewsArticle | null => {
+  const post = newsSeed.find((item) => item.slug === slug);
+  const content = newsContent[slug];
+  if (!post || !content) return null;
+  return { ...post, contentHtml: content.contentHtml };
+};
+
+/** Последние материалы для главной, архива и поиска. */
 export async function getLatestNews(limit = 3): Promise<NewsPost[]> {
-  if (hasSupabase) {
+  const safeLimit = Math.max(1, Math.min(limit, 100));
+  if (hasSupabase()) {
     try {
-      const rows = await fetchFromSupabase(limit);
-      if (rows.length > 0) return rows;
+      const supabase = await supabaseClient();
+      const { data, error } = await supabase
+        .from("news")
+        .select(SUMMARY_SELECT)
+        .eq("is_published", true)
+        .order("published_at", { ascending: false })
+        .limit(safeLimit);
+      if (error) throw error;
+      return ((data ?? []) as NewsRow[]).map(fromRow);
     } catch (e) {
       console.warn("[news] Supabase недоступен, отдаю локальный снапшот:", (e as Error).message);
     }
   }
-  return [...newsSeed].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1)).slice(0, limit);
-}
-
-async function fetchFeaturedFromSupabase(slugs: string[]): Promise<NewsPost[]> {
-  const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
-  const { data, error } = await supabase
-    .from("news")
-    .select("slug, title, kind, published_at, image_url, source_url")
-    .eq("is_published", true)
-    .in("slug", slugs);
-  if (error) throw error;
-  const rows = (data as NewsRow[]).map(fromRow);
-  return orderBySlugs(rows, slugs);
+  return sortByDate(newsSeed).slice(0, safeLimit);
 }
 
 const orderBySlugs = (pool: NewsPost[], slugs: string[]): NewsPost[] =>
-  slugs
-    .map((slug) => pool.find((n) => n.slug === slug))
-    .filter((n): n is NewsPost => !!n);
+  slugs.map((slug) => pool.find((n) => n.slug === slug)).filter((n): n is NewsPost => !!n);
 
 /** Витрина главной: выбранные редакцией материалы в заданном порядке. */
 export async function getFeaturedNews(slugs: string[]): Promise<NewsPost[]> {
-  if (hasSupabase) {
+  if (hasSupabase()) {
     try {
-      const rows = await fetchFeaturedFromSupabase(slugs);
-      if (rows.length === slugs.length) return rows;
+      const supabase = await supabaseClient();
+      const { data, error } = await supabase
+        .from("news")
+        .select(SUMMARY_SELECT)
+        .eq("is_published", true)
+        .in("slug", slugs);
+      if (error) throw error;
+      return orderBySlugs(((data ?? []) as NewsRow[]).map(fromRow), slugs);
     } catch (e) {
       console.warn("[news] Supabase недоступен, отдаю локальный снапшот:", (e as Error).message);
     }
@@ -101,11 +119,24 @@ export async function getFeaturedNews(slugs: string[]): Promise<NewsPost[]> {
   return orderBySlugs(newsSeed, slugs);
 }
 
-const dateFmt = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+/** Полный материал для локальной страницы /info/news/[slug]/. */
+export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
+  if (hasSupabase()) {
+    try {
+      const supabase = await supabaseClient();
+      const { data, error } = await supabase
+        .from("news")
+        .select(ARTICLE_SELECT)
+        .eq("is_published", true)
+        .eq("slug", slug)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? fromArticleRow(data as NewsArticleRow) : null;
+    } catch (e) {
+      console.warn("[news] Supabase недоступен, отдаю локальный снапшот:", (e as Error).message);
+    }
+  }
+  return articleFromSeed(slug);
+}
 
-export const formatNewsDate = (iso: string) => dateFmt.format(new Date(iso));
-
-export const kindLabel: Record<NewsKind, string> = {
-  news: "Новость",
-  event: "Мероприятие",
-};
+export { formatNewsDate, kindLabel, newsItemHref } from "./news-format";

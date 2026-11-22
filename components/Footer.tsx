@@ -61,7 +61,7 @@ export function Footer() {
             <a href="https://ivs-corp.ru/projects/" className={s.footerLink}>
               Каталог проектов
             </a>
-            <a href="https://ivs-corp.ru/info/news/" className={s.footerLink}>
+            <a href="/info/news/" className={s.footerLink}>
               Новости
             </a>
             <a href="https://iteventpermkrai.tilda.ws/" className={s.footerLink}>

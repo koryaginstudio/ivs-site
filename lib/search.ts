@@ -1,6 +1,7 @@
 import { nav, directions } from "@/components/ivs-content";
 import type { ProjectPost } from "./projects";
 import type { NewsPost } from "./news";
+import { newsItemHref } from "./news-format";
 
 // ================= Поиск по сайту =================
 // Индекс собирается из того же контента, что виден на сайте: меню и страницы,
@@ -60,7 +61,8 @@ export function newsEntries(news: NewsPost[]): SearchEntry[] {
   return news.map((n) => ({
     title: n.title,
     category: n.kind === "event" ? "Мероприятия" : "Новости",
-    href: n.sourceUrl,
+    href: newsItemHref(n.slug),
+    text: n.excerpt,
   }));
 }
 
