@@ -53,7 +53,6 @@ export default async function NewsArticlePage({ params }: PageProps) {
               <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time>
             </div>
             <h1>{article.title}</h1>
-            {article.excerpt ? <p className={s.articleLead}>{article.excerpt}</p> : null}
           </header>
 
           {article.image ? (

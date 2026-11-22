@@ -305,7 +305,7 @@ function Arrow({ direction }: { direction: "left" | "right" }) {
 export function Reviews() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
-  const dragState = useRef<{ startX: number; startScroll: number; moved: boolean } | null>(null);
+  const dragState = useRef<{ startX: number; startScroll: number; moved: boolean; dir: number } | null>(null);
   const suppressClick = useRef(false);
 
   const step = () => {
@@ -336,7 +336,7 @@ export function Reviews() {
   // перетаскивание ленты мышью: тач-устройства работают нативным свайпом
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") return;
-    dragState.current = { startX: event.clientX, startScroll: trackRef.current?.scrollLeft ?? 0, moved: false };
+    dragState.current = { startX: event.clientX, startScroll: trackRef.current?.scrollLeft ?? 0, moved: false, dir: 0 };
     // захват указателя ставим только после превышения порога движения,
     // иначе обычный клик по ссылке «Оригинал» съедается захватом
   };
@@ -356,7 +356,11 @@ export function Reviews() {
         // синтетические события без активного указателя - drag продолжит работать пока курсор над лентой
       }
     }
-    if (state.moved) track.scrollLeft = state.startScroll - delta;
+    if (state.moved) {
+      // запоминаем последнее направление жеста: 1 - вперёд, -1 - назад
+      if (delta !== 0) state.dir = delta < 0 ? 1 : -1;
+      track.scrollLeft = state.startScroll - delta;
+    }
   };
 
   const onPointerEnd = () => {
@@ -364,9 +368,28 @@ export function Reviews() {
     const track = trackRef.current;
     if (!state || !track) return;
     dragState.current = null;
-    // снимаем флаг drag: scroll-snap включён обратно и браузер сам
-    // мягко притянет ленту к ближайшей карточке, без программной доводки
-    track.removeAttribute("data-dragging");
+    if (!state.moved) {
+      track.removeAttribute("data-dragging");
+      return;
+    }
+    // доводка строго в сторону жеста: лента никогда не едет против руки -
+    // тянул вперёд, даже чуть-чуть - карточка доставляется, назад - возвращается
+    const size = step();
+    if (!size) {
+      track.removeAttribute("data-dragging");
+      return;
+    }
+    const pos = track.scrollLeft / size;
+    const target =
+      state.dir > 0
+        ? Math.min(Math.ceil(pos - 0.001), reviews.length - 1)
+        : Math.max(Math.floor(pos + 0.001), 0);
+    setIndex(target);
+    track.scrollTo({ left: target * size, behavior: "smooth" });
+    // snap включаем обратно только после доводки и только если drag не начат заново
+    window.setTimeout(() => {
+      if (!dragState.current) trackRef.current?.removeAttribute("data-dragging");
+    }, 600);
   };
 
   return (
