@@ -1437,9 +1437,32 @@
 .aboutPanel::before {
   content: "";
   position: absolute;
-  inset: 0;
+  /* слой больше плашки, чтобы при дрейфе не открывались края */
+  inset: -55%;
   pointer-events: none;
-  background: radial-gradient(60% 90% at 12% 0%, rgba(255, 255, 255, 0.16) 0%, transparent 60%);
+  /* мягко переливающийся свет: два светлых пятна и глубина внизу */
+  background:
+    radial-gradient(42% 55% at 22% 28%, rgba(255, 255, 255, 0.17) 0%, transparent 62%),
+    radial-gradient(48% 62% at 78% 72%, rgba(255, 255, 255, 0.1) 0%, transparent 65%),
+    radial-gradient(45% 58% at 68% 18%, rgba(255, 147, 138, 0.16) 0%, transparent 68%),
+    radial-gradient(50% 60% at 30% 82%, rgba(120, 14, 20, 0.28) 0%, transparent 70%);
+  animation: aboutFlow 16s ease-in-out infinite alternate;
+}
+
+/* медленный дрейф световых пятен - плашка «дышит», не отвлекая от текста */
+@keyframes aboutFlow {
+  from {
+    transform: translate3d(-3.5%, -2.5%, 0) rotate(-1.6deg);
+  }
+  to {
+    transform: translate3d(3.5%, 2.5%, 0) rotate(1.6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aboutPanel::before {
+    animation: none;
+  }
 }
 
 .aboutPanel > * {

@@ -720,6 +720,31 @@
   }
 }
 
+/* Компактный масштаб заголовков: редакционная иерархия без oversized-типографики. */
+.pageHead h1 {
+  font-size: clamp(40px, 5vw, 72px);
+  letter-spacing: -0.04em;
+}
+
+.featured h2 {
+  font-size: clamp(26px, 2.4vw, 38px);
+}
+
+.archiveTitle {
+  font-size: clamp(24px, 2.2vw, 32px);
+}
+
+.articleHead h1 {
+  font-size: clamp(30px, 3.4vw, 48px);
+  letter-spacing: -0.035em;
+}
+
+@media (max-width: 520px) {
+  .pageHead h1 {
+    font-size: 42px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .previewMedia {
     animation: none;
