@@ -2036,6 +2036,37 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
+.backToTop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-12);
+  color: var(--white_text_elements);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-soft);
+}
+
+.backToTop:focus-visible {
+  outline-color: var(--white_text_elements);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .backToTop:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backToTop {
+    transition: none;
+  }
+}
+
 /* --- Hover новых блоков — только мышь --- */
 
 @media (hover: hover) and (pointer: fine) {

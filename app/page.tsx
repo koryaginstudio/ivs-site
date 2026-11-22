@@ -5,6 +5,7 @@ import { Services } from "@/components/Services";
 import { Projects } from "@/components/Projects";
 import { Partners } from "@/components/Partners";
 import { News } from "@/components/News";
+import { Reviews } from "@/components/Reviews";
 import { ContactsBlock } from "@/components/ContactsBlock";
 import { Footer } from "@/components/Footer";
 
@@ -22,6 +23,7 @@ export default function HomePage() {
       <Projects />
       <Partners />
       <News />
+      <Reviews />
       <ContactsBlock />
       <Footer />
     </>
