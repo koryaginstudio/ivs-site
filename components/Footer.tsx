@@ -1,5 +1,6 @@
 import { nav, phone, contacts, requisites } from "@/components/ivs-content";
 import s from "../app/home.module.css";
+import { BackToTop } from "./BackToTop";
 
 // Футер: тёмная подложка (surface-inverse из ДС), разделы и контакты — как на ivs-corp.ru.
 // Документы — реальные ссылки старого сайта (проверены 20.11). «Использование cookie» -
@@ -89,6 +90,7 @@ export function Footer() {
           <span>
             © 1990–{new Date().getFullYear()} {requisites.name}
           </span>
+          <BackToTop />
         </div>
       </div>
     </footer>

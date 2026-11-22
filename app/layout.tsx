@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={inter.variable} suppressHydrationWarning>
-      <body>
+      <body id="page-top" tabIndex={-1}>
         {children}
         <CookieBanner />
       </body>

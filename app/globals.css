@@ -73,6 +73,10 @@ body {
   color: var(--Dark_text_elements);
 }
 
+#page-top:focus {
+  outline: none;
+}
+
 a {
   color: inherit;
 }
