@@ -49,9 +49,9 @@
 
 /* мягкое приближение карточки при наведении, как у направлений */
 .card:is(:hover, :focus-visible) {
-  transform: scale(1.025);
-  border-color: color-mix(in srgb, var(--red_main) 24%, var(--hairline));
-  box-shadow: 0 18px 44px -20px rgb(26 24 24 / 0.22);
+  transform: scale(1.04) translateY(-3px);
+  border-color: color-mix(in srgb, var(--red_main) 28%, var(--hairline));
+  box-shadow: 0 24px 52px -20px rgb(26 24 24 / 0.28);
 }
 
 .head {
