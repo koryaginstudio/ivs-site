@@ -336,14 +336,9 @@ export function Reviews() {
   // перетаскивание ленты мышью: тач-устройства работают нативным свайпом
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") return;
-    const track = trackRef.current;
-    if (!track) return;
-    dragState.current = { startX: event.clientX, startScroll: track.scrollLeft, moved: false };
-    try {
-      track.setPointerCapture(event.pointerId);
-    } catch {
-      // синтетические события без активного указателя - drag продолжит работать пока курсор над лентой
-    }
+    dragState.current = { startX: event.clientX, startScroll: trackRef.current?.scrollLeft ?? 0, moved: false };
+    // захват указателя ставим только после превышения порога движения,
+    // иначе обычный клик по ссылке «Оригинал» съедается захватом
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -355,6 +350,11 @@ export function Reviews() {
       state.moved = true;
       suppressClick.current = true;
       track.setAttribute("data-dragging", "");
+      try {
+        track.setPointerCapture(event.pointerId);
+      } catch {
+        // синтетические события без активного указателя - drag продолжит работать пока курсор над лентой
+      }
     }
     if (state.moved) track.scrollLeft = state.startScroll - delta;
   };
@@ -364,15 +364,9 @@ export function Reviews() {
     const track = trackRef.current;
     if (!state || !track) return;
     dragState.current = null;
+    // снимаем флаг drag: scroll-snap включён обратно и браузер сам
+    // мягко притянет ленту к ближайшей карточке, без программной доводки
     track.removeAttribute("data-dragging");
-    if (!state.moved) return;
-    // доводим ленту до ближайшей карточки после броска
-    const size = step();
-    if (!size) return;
-    const target = Math.max(0, Math.min(Math.round(track.scrollLeft / size), reviews.length - 1));
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    track.scrollTo({ left: target * size, behavior: reducedMotion ? "auto" : "smooth" });
-    setIndex(target);
   };
 
   return (
@@ -406,7 +400,7 @@ export function Reviews() {
               <header className={styles.head}>
                 {media?.logo ? (
                   <span className={`${styles.mark} ${styles.markLogo}`}>
-                    <img src={media.logo} alt="" width={44} height={44} loading="lazy" draggable={false} />
+                    <img src={media.logo} alt="" width={56} height={56} loading="lazy" draggable={false} />
                   </span>
                 ) : (
                   <span className={styles.mark} aria-hidden="true">
