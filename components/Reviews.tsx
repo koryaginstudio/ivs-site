@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "./Reveal";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SectionHead } from "./SectionHead";
 import reviewMedia from "./reviews-media.json";
 import home from "../app/home.module.css";
@@ -305,8 +305,15 @@ function Arrow({ direction }: { direction: "left" | "right" }) {
 export function Reviews() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const targetIndex = useRef(0);
+  const programmatic = useRef(false);
+  const scrollEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragState = useRef<{ startX: number; startScroll: number; moved: boolean; dir: number } | null>(null);
   const suppressClick = useRef(false);
+
+  useEffect(() => () => {
+    if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
+  }, []);
 
   const step = () => {
     const track = trackRef.current;
@@ -316,21 +323,56 @@ export function Reviews() {
     return card.offsetWidth + gap;
   };
 
-  const syncIndex = () => {
+  const measuredIndex = () => {
     const track = trackRef.current;
     const size = step();
-    if (!track || !size) return;
-    setIndex(Math.max(0, Math.min(Math.round(track.scrollLeft / size), reviews.length - 1)));
+    if (!track || !size) return 0;
+    return Math.max(0, Math.min(Math.round(track.scrollLeft / size), reviews.length - 1));
   };
 
-  const goTo = (nextIndex: number) => {
+  const finishScroll = () => {
+    if (dragState.current) return;
+    programmatic.current = false;
+    trackRef.current?.removeAttribute("data-dragging");
+    const actual = measuredIndex();
+    targetIndex.current = actual;
+    setIndex(actual);
+  };
+
+  const scheduleFinish = (delay: number) => {
+    if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
+    scrollEndTimer.current = setTimeout(finishScroll, delay);
+  };
+
+  const syncIndex = () => {
+    if (dragState.current) return;
+    // Промежуточные кадры smooth-scroll не должны откатывать выбранный индекс.
+    if (programmatic.current) {
+      scheduleFinish(140);
+      return;
+    }
+    const actual = measuredIndex();
+    targetIndex.current = actual;
+    setIndex(actual);
+  };
+
+  const animateTo = (target: number) => {
     const track = trackRef.current;
     const size = step();
     if (!track || !size) return;
-    const target = Math.max(0, Math.min(nextIndex, reviews.length - 1));
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    track.scrollTo({ left: target * size, behavior: reducedMotion ? "auto" : "smooth" });
+    targetIndex.current = target;
     setIndex(target);
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    programmatic.current = !reducedMotion;
+    track.scrollTo({ left: target * size, behavior: reducedMotion ? "auto" : "smooth" });
+    if (reducedMotion) finishScroll();
+    else scheduleFinish(700);
+  };
+
+  const goTo = (direction: number) => {
+    const target = Math.max(0, Math.min(targetIndex.current + direction, reviews.length - 1));
+    animateTo(target);
   };
 
   // перетаскивание ленты мышью: тач-устройства работают нативным свайпом

@@ -36,6 +36,7 @@
   border: 0;
   background: transparent;
   color: var(--Dark_text_elements);
+  font: inherit;
   text-align: left;
   text-decoration: none;
   cursor: pointer;
@@ -55,7 +56,6 @@
     opacity 200ms var(--ease-soft);
 }
 
-.item[data-active="true"] .trigger::before,
 .item[data-open="true"] .trigger::before {
   transform: scaleY(1);
   opacity: 1;
@@ -76,12 +76,11 @@
   transition: transform 360ms var(--ease-hover);
 }
 
-.item[data-active="true"] .index,
 .item[data-open="true"] .index {
   color: var(--red_main);
 }
 
-.item[data-active="true"] .label {
+.item[data-open="true"] .label {
   transform: translateX(6px);
 }
 
@@ -110,7 +109,7 @@
 }
 
 .item[data-open="true"] .toggle svg {
-  transform: translate(2px, -2px);
+  transform: rotate(180deg);
 }
 
 .panel {
@@ -308,7 +307,7 @@
     line-height: 1.35;
   }
 
-  .item[data-active="true"] .label {
+  .item[data-open="true"] .label {
     transform: translateX(3px);
   }
 
@@ -340,7 +339,7 @@
     transition-duration: 0.01ms;
   }
 
-  .item[data-active="true"] .label {
+  .item[data-open="true"] .label {
     transform: none;
   }
 }

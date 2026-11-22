@@ -33,10 +33,15 @@ function subserviceLabel(count: number) {
 export function Services() {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(-1); // по умолчанию все направления закрыты
-  // hover/focus раскрывает панель и переключает видео, клик ведёт на страницу направления
-  const enter = (index: number) => {
-    setActive(index);
-    setOpen(index);
+  // аккордеон: клик раскрывает панель и переключает видео, повторный клик закрывает;
+  // переход на страницу направления - по ссылке «Открыть направление» внутри панели
+  const toggle = (index: number) => {
+    if (open === index) {
+      setOpen(-1);
+    } else {
+      setActive(index);
+      setOpen(index);
+    }
   };
   // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
   const [reducedMotion, setReducedMotion] = useState(true);
@@ -82,10 +87,9 @@ export function Services() {
           </Note>
         }
       />
-      <div className={styles.layout} onMouseLeave={() => setOpen(-1)}>
+      <div className={styles.layout}>
         <ol className={styles.list}>
           {services.groups.map((group, index) => {
-            const isActive = active === index;
             const isOpen = open === index;
             const panelId = `service-panel-${index}`;
             const triggerId = `service-trigger-${index}`;
@@ -94,15 +98,15 @@ export function Services() {
               <li
                 className={styles.item}
                 key={group.href}
-                data-active={isActive}
                 data-open={isOpen}
-                onMouseEnter={() => enter(index)}
               >
-                <a
+                <button
+                  type="button"
                   id={triggerId}
-                  href={group.href}
                   className={styles.trigger}
-                  onFocus={() => enter(index)}
+                  onClick={() => toggle(index)}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
                 >
                   <span className={styles.index} aria-hidden="true">
                     {String(index + 1).padStart(2, "0")}
@@ -110,10 +114,10 @@ export function Services() {
                   <span className={styles.label}>{group.label}</span>
                   <span className={styles.toggle} aria-hidden="true">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
-                </a>
+                </button>
                 <div
                   id={panelId}
                   className={styles.panel}
