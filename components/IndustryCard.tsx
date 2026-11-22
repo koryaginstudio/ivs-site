@@ -5,9 +5,18 @@ import s from "../app/home.module.css";
 import styles from "./IndustryCards.module.css";
 
 const frameCount = 72;
+const assetVersion = 7;
 const columns = 9;
 const rows = frameCount / columns;
-const largeIcons = new Set(["government", "logistics", "forestry"]);
+const fullTurnIcons = new Set(["oil-gas", "energy"]);
+const durations: Readonly<Record<string, number>> = {
+  government: 1640,
+  logistics: 2080,
+  engineering: 2140,
+  medicine: 1800,
+  commercial: 1940,
+  forestry: 1940,
+};
 
 // Speed peaks halfway through the turn and falls gradually to zero at both ends.
 function turnProgress(time: number) {
@@ -21,8 +30,8 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
   const playing = useRef(false);
   const mounted = useRef(false);
   const directory = "/industry-icons";
-  const duration = largeIcons.has(icon) ? 1640 : 1440;
-  const assetVersion = icon === "energy" ? 3 : 2;
+  const fullTurn = fullTurnIcons.has(icon);
+  const duration = durations[icon] ?? 1440;
   const animationUrl = `${directory}/${icon}-spin.webp?v=${assetVersion}`;
 
   useEffect(() => {
@@ -74,7 +83,7 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
         playing.current = false;
         return;
       }
-      const frame = Math.round(turnProgress(progress) * frameCount) % frameCount;
+      const frame = Math.round((fullTurn ? turnProgress(progress) : progress) * frameCount) % frameCount;
       layer.style.backgroundPosition = `${(frame % columns) / (columns - 1) * 100}% ${Math.floor(frame / columns) / (rows - 1) * 100}%`;
       animation.current = requestAnimationFrame(tick);
     }
@@ -86,7 +95,7 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
       onPointerEnter={event => { if (event.pointerType !== "touch") void spin(event.currentTarget); }}
       onFocus={event => { if (event.currentTarget.matches(":focus-visible")) void spin(event.currentTarget); }}>
       <span className={`${s.cardMedia} ${styles.media}`} aria-hidden="true">
-        <img src={`${directory}/${icon}.webp`} width={224} height={224} alt="" loading="lazy" />
+        <img src={`${directory}/${icon}.webp?v=${assetVersion}`} width={224} height={224} alt="" loading="lazy" />
         <span ref={sprite} className={styles.sprite} />
       </span>
       <span className={s.cardBody}>
