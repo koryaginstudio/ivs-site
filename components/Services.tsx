@@ -45,6 +45,8 @@ export function Services() {
   // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
   const [reducedMotion, setReducedMotion] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const previewRailRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -66,6 +68,69 @@ export function Services() {
       });
     }
   }, [active, reducedMotion]);
+
+  useEffect(() => {
+    const rail = previewRailRef.current;
+    const preview = previewRef.current;
+    if (!rail || !preview) return;
+
+    const desktop = window.matchMedia("(min-width: 941px)");
+    let frame: number | null = null;
+    let current = 0;
+    let initialized = false;
+
+    const getTarget = () => {
+      const maxOffset = Math.max(0, rail.clientHeight - preview.offsetHeight);
+      return Math.min(Math.max(100 - rail.getBoundingClientRect().top, 0), maxOffset);
+    };
+
+    const tick = () => {
+      frame = null;
+      if (!desktop.matches || reducedMotion) {
+        preview.style.transform = "";
+        initialized = false;
+        return;
+      }
+
+      const target = getTarget();
+      if (!initialized) {
+        current = target;
+        initialized = true;
+      }
+      const distance = target - current;
+      current = Math.abs(distance) < 0.08 ? target : current + distance * 0.14;
+      preview.style.transform = `translate3d(0, ${current.toFixed(2)}px, 0)`;
+      if (current !== target) frame = requestAnimationFrame(tick);
+    };
+
+    const requestTick = () => {
+      if (frame === null) frame = requestAnimationFrame(tick);
+    };
+
+    const handleModeChange = () => {
+      initialized = false;
+      if (frame !== null) cancelAnimationFrame(frame);
+      frame = null;
+      requestTick();
+    };
+
+    const observer = new ResizeObserver(requestTick);
+    observer.observe(rail);
+    observer.observe(preview);
+    window.addEventListener("scroll", requestTick, { passive: true });
+    window.addEventListener("resize", requestTick);
+    desktop.addEventListener("change", handleModeChange);
+    requestTick();
+
+    return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", requestTick);
+      window.removeEventListener("resize", requestTick);
+      desktop.removeEventListener("change", handleModeChange);
+      preview.style.transform = "";
+    };
+  }, [reducedMotion]);
 
   if (services?.kind !== "mega") return null;
 
@@ -116,10 +181,6 @@ export function Services() {
                 >
                   <div className={styles.panelClip}>
                     <div className={styles.panelInner}>
-                      <div className={styles.panelHeading}>
-                        <span>Что входит в направление</span>
-                        <span className={styles.panelCount}>{subserviceLabel(group.items.length)}</span>
-                      </div>
                       <ul className={styles.sublist}>
                         {group.items.map((item, itemIndex) => (
                           <li key={item.href}>
@@ -149,29 +210,31 @@ export function Services() {
           })}
         </ol>
 
-        <figure className={styles.preview}>
-          <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
-            <video
-              key={active}
-              ref={videoRef}
-              className={styles.video}
-              src={preview.video}
-              poster={preview.poster}
-              muted
-              loop
-              playsInline
-              autoPlay={!reducedMotion}
-              preload="metadata"
-              aria-label={`${current.label}. ${preview.project}`}
-            />
-          </div>
-          <figcaption className={styles.caption} aria-live="polite">
-            <span className={styles.captionTitle}>{current.label}</span>
-            <span className={styles.captionMeta}>
-              {subserviceLabel(current.items.length)} · {preview.project}
-            </span>
-          </figcaption>
-        </figure>
+        <div className={styles.previewRail} ref={previewRailRef}>
+          <figure className={styles.preview} ref={previewRef}>
+            <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
+              <video
+                key={active}
+                ref={videoRef}
+                className={styles.video}
+                src={preview.video}
+                poster={preview.poster}
+                muted
+                loop
+                playsInline
+                autoPlay={!reducedMotion}
+                preload="metadata"
+                aria-label={`${current.label}. ${preview.project}`}
+              />
+            </div>
+            <figcaption className={styles.caption} aria-live="polite">
+              <span className={styles.captionTitle}>{current.label}</span>
+              <span className={styles.captionMeta}>
+                {subserviceLabel(current.items.length)} · {preview.project}
+              </span>
+            </figcaption>
+          </figure>
+        </div>
       </div>
     </Reveal>
   );

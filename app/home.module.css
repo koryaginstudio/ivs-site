@@ -1866,8 +1866,17 @@
 }
 
 .partnerPage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  background: var(--surface-100);
   color: var(--text-muted);
-  font: 500 13px/20px var(--font-sans);
+  font: 500 12px/18px var(--font-sans);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
 }
@@ -2145,9 +2154,9 @@
 }
 
 .footerLogo {
-  width: 44px;
-  height: 44px;
-  margin-bottom: 8px;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 12px;
 }
 
 .footerTagline {

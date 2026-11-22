@@ -27,7 +27,7 @@ export function Footer() {
       <div className={s.footerInner}>
         <div className={s.footerTop}>
           <div className={s.footerBrand}>
-            <img src="/ivs-mark-white.svg" alt="ИВС" width={44} height={44} className={s.footerLogo} />
+            <img src="/ivs-mark-white.svg" alt="ИВС" width={72} height={72} className={s.footerLogo} />
             <span className={s.footerTagline}>Создаём будущее с 1990 года</span>
             <a href={phone.href} className={s.footerPhone}>
               {phone.label}

@@ -146,26 +146,6 @@
   padding: 0 44px 28px;
 }
 
-.panelHeading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 3px 0 13px;
-  color: var(--Dark_text_elements);
-  font: 600 11px/16px var(--font-sans);
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.panelCount {
-  flex: none;
-  color: var(--text-muted);
-  font-weight: 450;
-  letter-spacing: 0.03em;
-  text-transform: none;
-}
-
 .sublist {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -235,12 +215,21 @@
   transition: transform var(--duration-base) var(--ease-out);
 }
 
-.preview {
-  position: sticky;
-  top: 100px;
+.previewRail {
+  position: relative;
   grid-area: preview;
+  align-self: stretch;
+  min-width: 0;
+}
+
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   min-width: 0;
   margin: 0;
+  will-change: transform;
 }
 
 .media {
@@ -353,6 +342,7 @@
   .preview {
     position: static;
     width: min(100%, 680px);
+    will-change: auto;
   }
 
   .label {
@@ -396,11 +386,6 @@
 
   .panelInner {
     padding: 0 0 24px 32px;
-  }
-
-  .panelHeading {
-    align-items: flex-start;
-    font-size: 10px;
   }
 
   .sublist {
