@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { nav, phone, type DirectionIcon, type NavItem } from "@/components/ivs-content";
 import { DIRECTION_ICONS } from "@/components/direction-icons";
 import s from "../app/home.module.css";
@@ -19,11 +20,21 @@ function Chevron() {
 }
 
 export function Header() {
+  const router = useRouter();
   const [open, setOpen] = useState<string | null>(null);
   const [sheet, setSheet] = useState(false);
   const [group, setGroup] = useState(0); // выбранное направление в мега-меню «Услуги»
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const root = useRef<HTMLElement>(null);
+
+  // Поиск: submit ведёт на /search/?q=..., пустой запрос не отправляем.
+  const submitSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const q = String(new FormData(e.currentTarget).get("q") ?? "").trim();
+    if (q.length < 2) return;
+    setSheet(false);
+    router.push(`/search/?q=${encodeURIComponent(q)}`);
+  };
 
   // Плавающая подложка меню: перетекает к пункту под курсором, гаснет при уходе мыши.
   const navRef = useRef<HTMLElement>(null);
@@ -194,8 +205,8 @@ export function Header() {
     <header className={s.header} ref={root}>
       <div className={s.bar}>
         <a href="https://ivs-corp.ru/" className={s.logo} aria-label="ИВС-СЕТИ — на главную">
-          {/* на белом фоне — основной плоский знак из ДС (ivs-mark.svg) */}
-          <img src="/ivs-mark.svg" width={44} height={44} alt="" />
+          {/* актуальный знак компании: градиентный квадрат с микросхемой (файл Антона, 23.11) */}
+          <img src="/ivs-mark-v2.svg" width={44} height={44} alt="" />
         </a>
 
         <nav
@@ -235,8 +246,8 @@ export function Header() {
         </nav>
 
         {/* Открытая поисковая строка вместо иконки-лупы: тянется между меню и телефоном (правка Антона, 20.11).
-            Механика поиска пока не подключена — submit глушим. */}
-        <form className={s.searchField} role="search" onSubmit={(e) => e.preventDefault()}>
+            Submit ведёт на /search/ - индекс: услуги, направления, проекты, новости, страницы. */}
+        <form className={s.searchField} role="search" onSubmit={submitSearch}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="2.2" />
             <path d="m15.5 15.5 5 5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
@@ -265,6 +276,20 @@ export function Header() {
       {/* Мобильное меню */}
       <div className={s.sheet} data-open={sheet || undefined} aria-hidden={!sheet}>
         <nav aria-label="Мобильное меню">
+          <form className={s.sheetSearch} role="search" onSubmit={submitSearch}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="2.2" />
+              <path d="m15.5 15.5 5 5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+            <input
+              className={s.searchInput}
+              type="search"
+              name="q"
+              placeholder="Поиск по сайту"
+              aria-label="Поиск по сайту"
+              tabIndex={sheet ? 0 : -1}
+            />
+          </form>
           <ul className={s.sheetList}>
             {nav.map((item) =>
               item.kind === "link" ? (

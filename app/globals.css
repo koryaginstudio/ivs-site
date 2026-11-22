@@ -92,3 +92,92 @@ a {
   color: var(--white_text_elements);
 }
 
+/* --- Появление секций при скролле (компонент Reveal) --- */
+.revealOn {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms var(--ease-out) var(--d, 0ms),
+    transform 600ms var(--ease-out) var(--d, 0ms);
+}
+
+.revealOn[data-show] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealOn {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --- Загрузочный экран: знак ИВС и заполняющаяся линия (компонент Preloader) --- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: var(--surface-100);
+  opacity: 1;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.preloader[data-fading] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preloaderInner {
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+  animation: preloader-in 600ms var(--ease-out) both;
+}
+
+@keyframes preloader-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.preloaderLogo {
+  display: block;
+  width: 72px;
+  height: 72px;
+}
+
+.preloaderTrack {
+  width: 132px;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.preloaderFill {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--red_main);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloaderInner {
+    animation: none;
+  }
+  .preloader {
+    transition-duration: 200ms;
+  }
+}
+

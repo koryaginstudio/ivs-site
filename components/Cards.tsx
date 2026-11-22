@@ -1,3 +1,4 @@
+import { Reveal } from "./Reveal";
 import { IndustryCard } from "./IndustryCard";
 import { SectionHead } from "./SectionHead";
 import s from "../app/home.module.css";
@@ -20,7 +21,7 @@ const industries = [
 
 export function Cards() {
   return (
-    <section className={s.cards} aria-label="Направления деятельности">
+    <Reveal as="section" className={s.cards} ariaLabel="Направления деятельности">
       <header className={styles.intro}>
         <SectionHead title={"> 10\u00a0направлений деятельности"} linkHref={projects} linkLabel="Все проекты" />
         <p>
@@ -36,6 +37,6 @@ export function Cards() {
           </li>
         ))}
       </ul>
-    </section>
+    </Reveal>
   );
 }

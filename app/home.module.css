@@ -7,6 +7,7 @@
 .cards,
 .section,
 .footerInner {
+  --container: 1440px;
   --gutter: clamp(16px, 4vw, 56px);
   --hairline: #e9e7e7; /* тонкие рамки карточек и полей — светлее line, как у референса */
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -40,7 +41,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-24);
-  max-width: 1440px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 12px var(--gutter);
 }
@@ -607,12 +608,13 @@
 /* ================= Главный экран ================= */
 
 .hero {
-  padding: var(--space-16) var(--gutter) 0;
+  /* нижний отступ 64px - тот же ритм, что у секций: направления не прилипают к плашке */
+  padding: var(--space-16) var(--gutter) 64px;
 }
 
 /* светло-серая скруглённая плашка внутри белой страницы */
 .panel {
-  max-width: calc(1440px - 2 * 56px);
+  max-width: calc(var(--container) - 2 * var(--gutter));
   min-height: clamp(520px, calc(100dvh - 73px - 16px - 120px), 760px);
   margin: 0 auto;
   display: grid;
@@ -976,7 +978,7 @@
 /* ================= Карточки направлений ================= */
 
 .cards {
-  max-width: 1440px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 64px var(--gutter);
   background: var(--surface-100);
@@ -1346,7 +1348,7 @@
   --section-bg: var(--surface-100);
   position: relative;
   isolation: isolate;
-  max-width: 1440px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 64px var(--gutter);
   background: var(--section-bg);
@@ -1476,11 +1478,31 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  animation: fade 300ms var(--ease-out);
 }
 
+/* мягкая смена года: карточки входят каскадом снизу, без резкого скачка плашек */
 .projGrid > li {
   position: relative;
+  animation: proj-in 500ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@keyframes proj-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projGrid > li {
+    animation: fade 200ms var(--ease-out) both;
+    animation-delay: 0ms;
+  }
 }
 
 .projGrid > li:hover {
@@ -1586,60 +1608,87 @@
     transform var(--dur-hover) var(--ease-hover);
 }
 
-/* календарная механика: лента лет со счётчиками (доработка select «По годам» старого сайта) */
-.yearRail {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-8);
+/* календарная механика: таймлайн с точками-узлами и заливкой до активного года */
+.timelineScroll {
   margin-top: var(--space-32);
   padding-top: var(--space-24);
   border-top: 1px solid var(--hairline);
 }
 
-.yearRailLabel {
-  margin-right: 4px;
-  font: 500 13px/18px var(--font-sans);
-  color: var(--text-muted);
+.timeline {
+  position: relative;
+  display: flex;
 }
 
-.yearChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 var(--space-16);
-  border: 1px solid var(--hairline);
+.timelineTrack {
+  position: absolute;
+  top: 33px; /* центр точки: год 20px + зазор 8px + половина точки */
+  height: 2px;
   border-radius: var(--radius-full);
-  background: var(--surface-100);
-  color: var(--Dark_text_elements);
-  font: 500 14px/20px var(--font-sans);
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition:
-    border-color var(--duration-fast) var(--ease-soft),
-    background-color var(--duration-fast) var(--ease-soft),
-    color var(--duration-fast) var(--ease-soft),
-    transform var(--duration-press) var(--ease-out);
+  background: var(--line);
+  overflow: hidden;
 }
 
-.yearChip:active {
-  transform: scale(0.97);
-}
-
-.yearCount {
-  font-size: 12px;
-  opacity: 0.55;
-}
-
-.yearChip[data-active] {
-  border-color: var(--red_main);
+.timelineFill {
+  display: block;
+  height: 100%;
   background: var(--red_main);
-  color: var(--white_text_elements);
+  transition: width 300ms var(--ease-out);
 }
 
-.yearChip[data-active] .yearCount {
-  opacity: 0.8;
+.timelineNode {
+  flex: 1 1 0;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.timelineYear {
+  font: 600 15px/20px var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--Dark_text_elements);
+  transition: color var(--duration-fast) var(--ease-soft);
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--surface-100);
+  border: 2px solid var(--line-strong);
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.timelineCount {
+  font: 400 12px/16px var(--font-sans);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.timelineNode[data-active] .timelineYear {
+  color: var(--red_main);
+}
+
+.timelineNode[data-active] .timelineDot {
+  background: var(--red_main);
+  border-color: var(--red_main);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 5px rgba(216, 52, 55, 0.12);
+}
+
+.timelineNode:active .timelineDot {
+  transform: scale(0.95);
 }
 
 /* --- Партнёры: 5×3 на экран, нативный свайп и равные контейнеры логотипов --- */
@@ -1717,6 +1766,19 @@
 .partnerArrows {
   display: flex;
   gap: var(--space-8);
+}
+
+.partnerArrow:disabled {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.partnerArrow:disabled:hover {
+  border-color: var(--hairline);
+  color: var(--text-muted);
+  background: var(--surface-100);
+  transform: none;
 }
 
 .partnerArrow {
@@ -1954,7 +2016,7 @@
 }
 
 .footerInner {
-  max-width: 1440px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 64px var(--gutter) 40px;
 }
@@ -2087,12 +2149,17 @@
   .projCard:hover .projMedia img {
     transform: scale(1.05);
   }
-  .yearChip:hover {
-    border-color: var(--line-strong);
+  .timelineNode:hover .timelineYear {
+    color: var(--red_main);
   }
-  .yearChip[data-active]:hover {
-    border-color: var(--red_pressed);
+  .timelineNode:hover .timelineDot {
+    border-color: var(--red_main);
+    transform: scale(1.2);
+  }
+  .timelineNode[data-active]:hover .timelineDot {
     background: var(--red_pressed);
+    border-color: var(--red_pressed);
+    transform: scale(1.35);
   }
   .partnerItem:hover .partnerLogo {
     transform: scale(1.08);
@@ -2150,6 +2217,9 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding-bottom: var(--space-32);
+  }
   .cards,
   .section {
     margin-top: 0;
@@ -2168,17 +2238,16 @@
   .projGrid {
     grid-template-columns: 1fr;
   }
-  .yearRail {
-    flex-wrap: nowrap;
+  .timelineScroll {
     overflow-x: auto;
     padding-bottom: 4px;
     -webkit-overflow-scrolling: touch;
   }
-  .yearRail::-webkit-scrollbar {
+  .timelineScroll::-webkit-scrollbar {
     display: none;
   }
-  .yearChip {
-    flex: none;
+  .timeline {
+    min-width: calc(var(--n, 8) * 88px);
   }
   .partnerGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2382,5 +2451,191 @@
 @media (max-width: 640px) {
   .cookieCats {
     grid-template-columns: 1fr;
+  }
+}
+
+/* --- Страница поиска (/search/) и поле в мобильном меню --- */
+
+.sheetSearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  margin-bottom: var(--space-16);
+  padding: 0 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-12);
+  color: var(--text-muted);
+}
+
+.sheetSearch:focus-within {
+  border-color: var(--line-strong);
+}
+
+.searchForm {
+  display: flex;
+  gap: var(--space-8);
+  margin: var(--space-24) 0 var(--space-32);
+}
+
+.searchFormInput {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 var(--space-16);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-12);
+  background: var(--surface-100);
+  font: 400 16px/22px var(--font-sans);
+  color: var(--Dark_text_elements);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-soft);
+}
+
+.searchFormInput:focus {
+  border-color: var(--line-strong);
+}
+
+.searchFormInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.searchFormBtn {
+  flex: none;
+  height: 52px;
+  padding: 0 var(--space-24);
+  border: 0;
+  border-radius: var(--radius-12);
+  background: var(--red_main);
+  color: var(--white_text_elements);
+  font: 600 15px/20px var(--font-sans);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-soft),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.searchFormBtn:active {
+  transform: scale(0.98);
+}
+
+.searchSummary {
+  margin: 0 0 var(--space-24);
+  font: 400 14px/20px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.searchGroup {
+  margin-bottom: var(--space-32);
+}
+
+.searchGroupTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  margin: 0 0 var(--space-8);
+  font: 700 20px/28px var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+.searchGroupCount {
+  font: 500 13px/18px var(--font-sans);
+  color: var(--text-muted);
+}
+
+.searchList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+}
+
+.searchItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--Dark_text_elements);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-soft);
+}
+
+.searchItem svg {
+  flex: none;
+  color: var(--text-muted);
+  transition:
+    color var(--duration-fast) var(--ease-soft),
+    transform var(--dur-hover, 600ms) var(--ease-hover, var(--ease-out));
+}
+
+.searchItemTitle {
+  font: 500 16px/24px var(--font-sans);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .searchFormBtn:hover {
+    background: var(--red_pressed);
+  }
+  .searchItem:hover {
+    color: var(--red_main);
+  }
+  .searchItem:hover svg {
+    color: var(--red_main);
+    transform: translate(2px, -2px);
+  }
+}
+
+@media (max-width: 640px) {
+  .searchForm {
+    flex-direction: column;
+  }
+  .searchFormBtn {
+    width: 100%;
+  }
+}
+
+/* --- Большие экраны: 2K (от 1920px) и 4K (от 2560px) ---
+   Контейнер и типографика растут пропорционально, сетки проектов/новостей
+   получают четвёртую колонку, ритм секций сохраняется. */
+
+@media (min-width: 1920px) {
+  .header,
+  .hero,
+  .cards,
+  .section,
+  .footerInner {
+    --container: 1760px;
+    --gutter: 64px;
+  }
+  .section {
+    padding-top: var(--space-80);
+    padding-bottom: var(--space-80);
+  }
+  .hero .title {
+    font-size: clamp(40px, 3.4vw, 64px);
+  }
+  .projGrid,
+  .newsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 2560px) {
+  .header,
+  .hero,
+  .cards,
+  .section,
+  .footerInner {
+    --container: 2112px;
+    --gutter: 80px;
+  }
+  .section {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+  .hero .title {
+    font-size: clamp(48px, 2.6vw, 72px);
   }
 }

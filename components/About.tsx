@@ -1,10 +1,11 @@
+import { Reveal } from "./Reveal";
 import { about } from "@/components/ivs-content";
 import s from "../app/home.module.css";
 
 // О компании коротко: формулировка из раздела «О компании» ivs-corp.ru, цифры — с главной старого сайта.
 export function About() {
   return (
-    <section className={s.section} aria-label="О компании">
+    <Reveal as="section" className={s.section} ariaLabel="О компании">
       <div className={s.aboutPanel}>
         <div>
           <h2 className={s.aboutTitle}>{about.title}</h2>
@@ -27,6 +28,6 @@ export function About() {
           ))}
         </ul>
       </div>
-    </section>
+    </Reveal>
   );
 }

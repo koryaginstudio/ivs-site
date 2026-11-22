@@ -1,5 +1,6 @@
 "use client";
 
+import { Reveal } from "./Reveal";
 import { useRef, useState } from "react";
 import { partnerLogos, partnersHref } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
@@ -39,7 +40,7 @@ export function Partners() {
   };
 
   return (
-    <section id="partners" className={`${s.section} ${s.sectionMuted}`} aria-label="Партнёры">
+    <Reveal as="section" id="partners" className={`${s.section} ${s.sectionMuted}`} ariaLabel="Партнёры">
       <SectionHead title="Наши партнёры" linkHref={partnersHref} linkLabel="Все партнёры" />
       <div
         ref={trackRef}
@@ -72,18 +73,27 @@ export function Partners() {
           {String(page + 1).padStart(2, "0")} / {String(pages.length).padStart(2, "0")}
         </span>
         <div className={s.partnerArrows}>
-          {page > 0 ? (
-            <button type="button" className={s.partnerArrow} onClick={() => goTo(page - 1)} aria-label="Предыдущие партнёры">
-              <Arrow direction="left" />
-            </button>
-          ) : null}
-          {page < pages.length - 1 ? (
-            <button type="button" className={s.partnerArrow} onClick={() => goTo(page + 1)} aria-label="Следующие партнёры">
-              <Arrow direction="right" />
-            </button>
-          ) : null}
+          {/* стрелки всегда на месте: в крайних положениях не пропадают, а гаснут */}
+          <button
+            type="button"
+            className={s.partnerArrow}
+            onClick={() => goTo(page - 1)}
+            disabled={page === 0}
+            aria-label="Предыдущие партнёры"
+          >
+            <Arrow direction="left" />
+          </button>
+          <button
+            type="button"
+            className={s.partnerArrow}
+            onClick={() => goTo(page + 1)}
+            disabled={page === pages.length - 1}
+            aria-label="Следующие партнёры"
+          >
+            <Arrow direction="right" />
+          </button>
         </div>
       </div>
-    </section>
+    </Reveal>
   );
 }

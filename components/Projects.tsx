@@ -1,3 +1,4 @@
+import { Reveal } from "./Reveal";
 import { getProjects } from "@/lib/projects";
 import { projectsCatalogHref } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
@@ -11,7 +12,7 @@ export async function Projects() {
   const projects = await getProjects();
 
   return (
-    <section className={s.section} aria-label="Проекты">
+    <Reveal as="section" className={s.section} ariaLabel="Проекты">
       <SectionHead
         title="Проекты"
         linkHref={projectsCatalogHref}
@@ -26,6 +27,6 @@ export async function Projects() {
         }
       />
       <ProjectsBrowser projects={projects} />
-    </section>
+    </Reveal>
   );
 }

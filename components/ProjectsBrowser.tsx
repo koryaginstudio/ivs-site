@@ -23,11 +23,25 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
     [projects, year],
   );
 
+  // Узлы таймлайна: «Все годы» + годы по убыванию. Активный узел ведёт красную заливку линии.
+  const nodes = useMemo(
+    () => [
+      { key: "all" as const, label: "Все годы", value: null as number | null, count: projects.length },
+      ...years.map(([y, count]) => ({ key: String(y), label: String(y), value: y as number | null, count })),
+    ],
+    [years, projects.length],
+  );
+  const activeIndex = nodes.findIndex((n) => n.value === year);
+  const n = nodes.length;
+  // узлы равной ширины - центры точек распределены равномерно, линия ложится точно
+  const trackInset = `${50 / n}%`;
+  const fillWidth = n > 1 && activeIndex > 0 ? `${(activeIndex / (n - 1)) * 100}%` : "0%";
+
   return (
     <>
       <ul className={s.projGrid} key={year ?? "all"}>
-        {visible.map((p) => (
-          <li key={p.slug}>
+        {visible.map((p, i) => (
+          <li key={p.slug} style={{ "--i": i } as React.CSSProperties}>
             <a href={p.sourceUrl} className={s.projCard}>
               <span className={s.projMedia}>
                 {p.image ? <img src={p.image} alt="" loading="lazy" /> : null}
@@ -48,32 +62,39 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
         ))}
       </ul>
 
-      {/* Календарная механика: годы-пилюли со счётчиками вместо select старого сайта */}
-      <div className={s.yearRail} role="group" aria-label="Проекты по годам">
-        <span className={s.yearRailLabel}>Проекты по годам:</span>
-        <button
-          type="button"
-          className={s.yearChip}
-          data-active={year === null || undefined}
-          onClick={() => setYear(null)}
-        >
-          Все годы
-          <span className={s.yearCount}>{projects.length}</span>
-        </button>
-        {years.map(([y, count]) => (
-          <button
-            key={y}
-            type="button"
-            className={s.yearChip}
-            data-active={year === y || undefined}
-            onClick={() => setYear(year === y ? null : y)}
-            aria-pressed={year === y}
-          >
-            {y}
-            <span className={s.yearCount}>{count}</span>
-          </button>
-        ))}
+      {/* Календарная механика: таймлайн с точками-узлами и красной заливкой до активного года.
+          На mobile лента прокручивается горизонтально, ширина узлов сохраняется. */}
+      <div className={s.timelineScroll}>
+        <div className={s.timeline} role="group" aria-label="Проекты по годам" style={{ "--n": n } as React.CSSProperties}>
+          <span className={s.timelineTrack} aria-hidden="true" style={{ left: trackInset, right: trackInset }}>
+            <span className={s.timelineFill} style={{ width: fillWidth }} />
+          </span>
+          {nodes.map((node) => (
+            <button
+              key={node.key}
+              type="button"
+              className={s.timelineNode}
+              data-active={year === node.value || undefined}
+              onClick={() => setYear(node.value === null || year === node.value ? null : node.value)}
+              aria-pressed={year === node.value}
+            >
+              <span className={s.timelineYear}>{node.label}</span>
+              <span className={s.timelineDot} aria-hidden="true" />
+              <span className={s.timelineCount}>
+                {node.count} {pluralProjects(node.count)}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
     </>
   );
+}
+
+function pluralProjects(count: number): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return "проект";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "проекта";
+  return "проектов";
 }

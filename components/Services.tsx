@@ -1,5 +1,6 @@
 "use client";
 
+import { Reveal } from "./Reveal";
 import { useEffect, useRef, useState } from "react";
 import { nav } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
@@ -10,14 +11,14 @@ import styles from "./Services.module.css";
 const services = nav.find((item) => item.kind === "mega");
 
 const previews = [
-  { video: "/services/complex-projects.webm", poster: "/projects/proj-02.jpg", project: "ЦОД и холодный коридор" },
-  { video: "/services/software.webm", poster: "/projects/proj-19.jpg", project: "Бизнес-система на базе 1С" },
-  { video: "/services/infrastructure.webm", poster: "/projects/proj-03.png", project: "Инфраструктура серверного оборудования" },
-  { video: "/services/security.webm", poster: "/projects/proj-07.jpeg", project: "Внедрение NGFW" },
-  { video: "/services/telecom.webm", poster: "/projects/proj-06.jpg", project: "Строительство сети связи" },
-  { video: "/services/engineering.webm", poster: "/projects/proj-12.jpeg", project: "Автоматизация инженерных систем" },
-  { video: "/services/support.webm", poster: "/projects/proj-14.jpg", project: "Централизованное обслуживание АРМ" },
-  { video: "/services/supply.webm", poster: "/projects/proj-04.jpg", project: "Поставка систем электропитания" },
+  { video: "/services/complex-projects-v2.webm", poster: "/services/complex-projects-v2.jpg", project: "Стройплощадка и инженеры" },
+  { video: "/services/software-v2.webm", poster: "/services/software-v2.jpg", project: "Команда разработки" },
+  { video: "/services/infrastructure-v2.webm", poster: "/services/infrastructure-v2.jpg", project: "Серверный узел" },
+  { video: "/services/security-v2.webm", poster: "/services/security-v2.jpg", project: "Центр мониторинга ИБ" },
+  { video: "/services/telecom-v2.webm", poster: "/services/telecom-v2.jpg", project: "Сетевое оборудование" },
+  { video: "/services/engineering-v2.webm", poster: "/services/engineering-v2.jpg", project: "Инженерные системы" },
+  { video: "/services/support-v2.webm", poster: "/services/support-v2.jpg", project: "Служба поддержки" },
+  { video: "/services/supply-v2.webm", poster: "/services/supply-v2.jpg", project: "Склад и логистика" },
 ];
 
 function subserviceLabel(count: number) {
@@ -31,7 +32,12 @@ function subserviceLabel(count: number) {
 
 export function Services() {
   const [active, setActive] = useState(0);
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(-1); // по умолчанию все направления закрыты
+  // hover/focus раскрывает панель и переключает видео, клик ведёт на страницу направления
+  const enter = (index: number) => {
+    setActive(index);
+    setOpen(index);
+  };
   // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
   const [reducedMotion, setReducedMotion] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -63,20 +69,20 @@ export function Services() {
   const preview = previews[active] ?? previews[0];
 
   return (
-    <section id="services" className={`${s.section} ${s.sectionMuted}`} aria-label="Услуги">
+    <Reveal as="section" id="services" className={`${s.section} ${s.sectionMuted}`} ariaLabel="Услуги">
       <SectionHead
         title="Услуги"
         linkHref={services.href}
         linkLabel="Все услуги"
         aside={
           <Note id="note-services" label="Пометка к блоку услуг">
-            Структура и подуслуги взяты из официального меню ИВС. Для preview использованы реальные проектные фотографии
-            ИВС с локально созданным движением камеры, без стоковых роликов. Их можно заменить на съёмку заказчика без
+            Структура и подуслуги взяты из официального меню ИВС. Для preview использованы стоковые видео
+            (лицензия Pexels, свободное использование). Их можно заменить на съёмку заказчика без
             изменения механики блока.
           </Note>
         }
       />
-      <div className={styles.layout} onMouseLeave={() => setActive(open >= 0 ? open : active)}>
+      <div className={styles.layout} onMouseLeave={() => setOpen(-1)}>
         <ol className={styles.list}>
           {services.groups.map((group, index) => {
             const isActive = active === index;
@@ -90,20 +96,13 @@ export function Services() {
                 key={group.href}
                 data-active={isActive}
                 data-open={isOpen}
-                onMouseEnter={() => setActive(index)}
+                onMouseEnter={() => enter(index)}
               >
-                <button
+                <a
                   id={triggerId}
-                  type="button"
+                  href={group.href}
                   className={styles.trigger}
-                  aria-expanded={isOpen}
-                  aria-controls={panelId}
-                  aria-label={`${group.label}: ${isOpen ? "скрыть" : "показать"} подуслуги`}
-                  onFocus={() => setActive(index)}
-                  onClick={() => {
-                    setActive(index);
-                    setOpen((currentOpen) => (currentOpen === index ? -1 : index));
-                  }}
+                  onFocus={() => enter(index)}
                 >
                   <span className={styles.index} aria-hidden="true">
                     {String(index + 1).padStart(2, "0")}
@@ -111,10 +110,10 @@ export function Services() {
                   <span className={styles.label}>{group.label}</span>
                   <span className={styles.toggle} aria-hidden="true">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 12h14M12 5v14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
-                </button>
+                </a>
                 <div
                   id={panelId}
                   className={styles.panel}
@@ -175,6 +174,6 @@ export function Services() {
           </figcaption>
         </figure>
       </div>
-    </section>
+    </Reveal>
   );
 }

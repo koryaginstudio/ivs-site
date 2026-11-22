@@ -1,10 +1,11 @@
+import { Reveal } from "./Reveal";
 import { contacts } from "@/components/ivs-content";
 import s from "../app/home.module.css";
 
 // Контактный блок: без формы (согласовано с заказчиком) — телефон, почта, офисы, переход на страницу контактов.
 export function ContactsBlock() {
   return (
-    <section className={s.section} aria-label="Контакты">
+    <Reveal as="section" className={s.section} ariaLabel="Контакты">
       <div className={s.contactPanel}>
         <div className={s.contactMain}>
           <h2 className={s.contactTitle}>Как мы можем помочь вашему бизнесу?</h2>
@@ -40,6 +41,6 @@ export function ContactsBlock() {
           ))}
         </ul>
       </div>
-    </section>
+    </Reveal>
   );
 }

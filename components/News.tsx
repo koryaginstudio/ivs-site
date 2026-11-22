@@ -1,3 +1,4 @@
+import { Reveal } from "./Reveal";
 import { getLatestNews, formatNewsDate, kindLabel } from "@/lib/news";
 import { newsHref } from "@/components/ivs-content";
 import { SectionHead } from "./SectionHead";
@@ -10,7 +11,7 @@ export async function News() {
   const items = await getLatestNews(3);
 
   return (
-    <section className={s.section} aria-label="Новости и мероприятия">
+    <Reveal as="section" className={s.section} ariaLabel="Новости и мероприятия">
       <SectionHead
         title="Новости и мероприятия"
         linkHref={newsHref}
@@ -44,6 +45,6 @@ export async function News() {
           </li>
         ))}
       </ul>
-    </section>
+    </Reveal>
   );
 }

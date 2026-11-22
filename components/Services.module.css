@@ -37,6 +37,7 @@
   background: transparent;
   color: var(--Dark_text_elements);
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -111,7 +112,7 @@
 }
 
 .item[data-open="true"] .toggle svg {
-  transform: rotate(45deg);
+  transform: translate(2px, -2px);
 }
 
 .panel {
