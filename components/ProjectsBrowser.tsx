@@ -18,6 +18,8 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
   const [phase, setPhase] = useState<"idle" | "out" | "in">("idle");
   const stageRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLUListElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const pinCancel = useRef<(() => void) | null>(null);
   const timers = useRef<number[]>([]);
 
   // годы по убыванию со счётчиками проектов
@@ -69,6 +71,38 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
       return;
     }
 
+    // пока высота сцены перетекает, держим таймлайн на том же месте экрана -
+    // иначе страница «проваливается» под строку лет при сжатии сетки
+    pinCancel.current?.();
+    const timeline = timelineRef.current;
+    let stopPin = () => {};
+    if (timeline) {
+      const initialTop = timeline.getBoundingClientRect().top;
+      const startedAt = performance.now();
+      let raf = 0;
+      let cancelled = false;
+      const cancelOnUserScroll = () => {
+        cancelled = true;
+      };
+      const pin = () => {
+        if (!cancelled) {
+          const delta = timeline.getBoundingClientRect().top - initialTop;
+          if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+        }
+        if (!cancelled && performance.now() - startedAt < 1200) raf = requestAnimationFrame(pin);
+      };
+      raf = requestAnimationFrame(pin);
+      window.addEventListener("wheel", cancelOnUserScroll, { once: true, passive: true });
+      window.addEventListener("touchmove", cancelOnUserScroll, { once: true, passive: true });
+      stopPin = () => {
+        cancelled = true;
+        cancelAnimationFrame(raf);
+        window.removeEventListener("wheel", cancelOnUserScroll);
+        window.removeEventListener("touchmove", cancelOnUserScroll);
+      };
+    }
+    pinCancel.current = stopPin;
+
     // фиксируем текущую высоту, чтобы она анимировалась, а не прыгала
     const stage = stageRef.current;
     const grid = gridRef.current;
@@ -119,7 +153,7 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
 
       {/* Календарная механика: таймлайн с точками-узлами и красной заливкой до активного года.
           На mobile лента прокручивается горизонтально, ширина узлов сохраняется. */}
-      <div className={s.timelineScroll}>
+      <div className={s.timelineScroll} ref={timelineRef}>
         <div className={s.timeline} role="group" aria-label="Проекты по годам" style={{ "--n": n } as React.CSSProperties}>
           <span className={s.timelineTrack} aria-hidden="true" style={{ left: trackInset, right: trackInset }}>
             <span className={s.timelineFill} style={{ width: fillWidth }} />
