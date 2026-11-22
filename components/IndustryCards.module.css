@@ -31,9 +31,6 @@
   visibility: hidden;
   background-repeat: no-repeat;
 }
-.arrow {
-  flex: 0 0 32px;
-}
 .services {
   margin-top: var(--space-24);
 }

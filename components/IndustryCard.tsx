@@ -125,8 +125,8 @@ export function IndustryCard({ icon, label, href }: { icon: string; label: strin
       <span className={s.cardBody}>
         <span className={s.cardHead}>
           <span className={s.cardTitle}>{label}</span>
-          <span className={`${s.cardArrow} ${styles.arrow}`} aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <span className={s.cardArrow} aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
