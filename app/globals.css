@@ -66,6 +66,17 @@ body {
   padding: 0;
 }
 
+/* якорные переходы внутри страницы: отступ, чтобы блок не прятался под шапкой */
+html {
+  scroll-padding-top: 96px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

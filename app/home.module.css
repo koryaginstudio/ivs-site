@@ -1381,7 +1381,14 @@
   margin-bottom: var(--space-32);
 }
 
-.headTitle,
+.headTitle {
+  margin: 0;
+  font: 600 clamp(32px, 4vw, 56px) / 1.08 var(--font-sans);
+  letter-spacing: -0.025em;
+  color: var(--Dark_text_elements);
+  text-wrap: balance;
+}
+
 .aboutTitle,
 .contactTitle {
   margin: 0;
@@ -2696,7 +2703,8 @@
     padding-top: var(--space-80);
     padding-bottom: var(--space-80);
   }
-  .hero .title {
+  .hero .title,
+  .headTitle {
     font-size: clamp(40px, 3.4vw, 64px);
   }
   .projGrid,
@@ -2721,7 +2729,8 @@
     padding-top: 96px;
     padding-bottom: 96px;
   }
-  .hero .title {
+  .hero .title,
+  .headTitle {
     font-size: clamp(48px, 2.6vw, 72px);
   }
 }

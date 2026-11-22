@@ -56,6 +56,62 @@
 .serviceList a:focus-visible {
   text-decoration: underline;
 }
+/* --- Красная CTA-карточка «Не нашли свою сферу?» - закрывает сетку направлений --- */
+
+.ctaCard.ctaCard {
+  border-color: transparent;
+  background: linear-gradient(118deg, #e2474b 0%, var(--red_main) 46%, #a81d23 100%);
+  color: var(--white_text_elements);
+}
+
+.ctaBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ctaTitle {
+  font: 600 16px/1.3 var(--font-sans);
+}
+
+.ctaSub {
+  color: rgba(255, 255, 255, 0.82);
+  font: 400 13px/1.45 var(--font-sans);
+}
+
+.ctaArrow {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--white_text_elements);
+  transition:
+    background-color var(--duration-fast, 160ms) ease,
+    transform var(--dur-hover, 600ms) var(--ease-hover, ease);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .ctaCard.ctaCard:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 18px 40px -16px rgba(168, 29, 35, 0.55);
+  }
+
+  .ctaCard.ctaCard:hover .ctaArrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+@media (max-width: 640px) {
+  .ctaCard.ctaCard {
+    min-height: 72px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sprite {
     display: none;

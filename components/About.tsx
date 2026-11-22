@@ -6,7 +6,7 @@ import { about } from "@/components/ivs-content";
 import s from "../app/home.module.css";
 
 // О компании коротко: формулировка из раздела «О компании» ivs-corp.ru, цифры — с главной старого сайта.
-// Контрастная красная плашка: слева текст и цифры, справа видеофрейм (сток Pexels, свободная лицензия).
+// Контрастная красная плашка: слева текст и цифры, справа фирменный видеоролик ИВС без вступления.
 export function About() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
@@ -57,14 +57,14 @@ export function About() {
           <video
             ref={videoRef}
             className={s.aboutVideo}
-            src="/about/about-ivs.webm"
+            src="/about/about-ivs.mp4"
             poster="/about/about-ivs.jpg"
             autoPlay
             muted
             loop
             playsInline
             preload="metadata"
-            aria-label="Видео: современный центр обработки данных с высоты"
+            aria-label="Видео ИВС: участники и события компании"
           />
         </div>
       </div>
