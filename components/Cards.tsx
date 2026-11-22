@@ -38,17 +38,12 @@ export function Cards() {
         ))}
         {/* красная CTA-карточка закрывает сетку: для клиентов, чьей сферы нет в списке */}
         <li>
-          <a href="#contacts" className={`${s.card} ${styles.ctaCard}`}>
-            <span className={styles.ctaBody}>
-              <span className={styles.ctaTitle}>Не нашли свою сферу?</span>
-              <span className={styles.ctaSub}>Расскажите о задаче - подберём решение</span>
-            </span>
-            <span className={styles.ctaArrow} aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-          </a>
+          <IndustryCard
+            icon="chrome-question"
+            label="Не нашли свою сферу?"
+            description="Расскажите о задаче - подберём решение"
+            href="#contacts"
+          />
         </li>
       </ul>
     </Reveal>

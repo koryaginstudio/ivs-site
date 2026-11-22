@@ -140,7 +140,7 @@
     transform: scale(1.14);
   }
 
-  .industryCard.industryCard:hover {
+  .industryCard.industryCard:not(.ctaCard):hover {
     transform: translateY(-2px);
     transition-duration: 280ms;
   }
