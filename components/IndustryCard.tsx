@@ -11,7 +11,7 @@ const updatedAssets: Readonly<Record<string, { filename: string; frames: number 
   logistics: { filename: "logistics-bed-cycle", frames: 39 },
   "chrome-question": { filename: "chrome-question", frames: 72 },
 };
-const chromeIcons = new Set([
+const glossIcons = new Set([
   "government", "oil-gas", "education", "logistics", "engineering", "medicine",
   "commercial", "energy", "metallurgy", "forestry", "chemistry",
 ]);
@@ -45,14 +45,14 @@ export function IndustryCard({ icon, label, href, description }: {
   const loading = useRef<Promise<HTMLImageElement> | null>(null);
   const playing = useRef(false);
   const mounted = useRef(false);
-  const usesChrome = chromeIcons.has(icon);
-  const directory = usesChrome ? "/industry-icons/chrome" : "/industry-icons";
+  const usesGloss = glossIcons.has(icon);
+  const directory = usesGloss ? "/industry-icons/gloss" : "/industry-icons";
   const asset = updatedAssets[icon];
   const filename = asset?.filename ?? icon;
   const frameCount = asset?.frames ?? defaultFrameCount;
   const rows = Math.ceil(frameCount / columns);
   const duration = durations[icon] ?? 1440;
-  const version = asset || usesChrome ? "" : "?v=7";
+  const version = asset || usesGloss ? "" : "?v=7";
   const stillUrl = `${directory}/${filename}.webp${version}`;
   const animationUrl = `${directory}/${filename}-spin.webp${version}`;
 
