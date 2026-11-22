@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description:
     "Более 10 направлений деятельности в сфере информационных технологий, множество реализованных проектов, внедрение комплексных решений для предприятий различных отраслей",
   // favicon.ico и apple-icon.png лежат в app/ и подхватываются автоматически, собраны из актуального знака
-  icons: { icon: [{ url: "/ivs-mark-v2.svg", type: "image/svg+xml" }, { url: "/favicon.ico", sizes: "48x48" }] },
+  icons: { icon: [{ url: "/ivs-mark-v2.svg?v=3", type: "image/svg+xml" }, { url: "/favicon.ico", sizes: "48x48" }] },
   robots: { index: false, follow: false }, // до запуска на боевом домене
 };
 
