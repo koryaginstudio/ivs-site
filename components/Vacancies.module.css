@@ -1,17 +1,23 @@
-.section { width: min(1180px, calc(100% - 80px)); margin: 0 auto 100px; padding-left: min(16vw, 220px); box-sizing: border-box; }
-.section h2 { font-size: 28px; font-weight: 500; margin: 0 0 20px; }
-.contact { line-height: 1.7; color: var(--text-muted); margin-bottom: 32px; }
+.section { max-width: 1440px; margin: -48px auto 96px; padding: 0 clamp(16px,4vw,56px); box-sizing: border-box; }
+.section h2 { font-size: 28px; font-weight: 500; margin: 0 0 16px; }
+.contact { line-height: 1.7; color: #555; margin: 0 0 32px; }
 .contact a { color: var(--red_main); text-decoration: none; }
-.jobs { border: 1px solid var(--hairline); border-radius: 20px; overflow: hidden; }
-.job + .job { border-top: 1px solid var(--hairline); }
-.job summary { padding: 28px; display: flex; justify-content: space-between; gap: 20px; align-items: center; cursor: pointer; list-style: none; font-size: 18px; font-weight: 500; }
-.job summary::-webkit-details-marker { display: none; }
-.job summary span { color: var(--red_main); transition: transform .2s; }
-.job[open] summary span { transform: rotate(180deg); }
-.job summary:focus-visible { outline: 2px solid var(--red_main); outline-offset: -4px; }
-.body { padding: 0 28px 32px; line-height: 1.7; color: var(--text-muted); }
-.body h3 { color: var(--text); margin: 28px 0 12px; font-size: 18px; }
-.body ul { padding-left: 22px; }
-.body li { margin-bottom: 8px; }
+.jobs { display: grid; gap: 16px; }
+.job { border: 1px solid #dedcdc; border-radius: 20px; background: #fafafa; overflow: hidden; transition: border-color .3s, box-shadow .3s; }
+.job[data-open=true] { border-color: #d9b5b7; box-shadow: 0 8px 24px -16px #8e343447; }
+.title { margin: 0; }
+.title button { width: 100%; border: 0; background: transparent; color: #222; padding: 28px 32px; display: flex; text-align: left; justify-content: space-between; gap: 24px; align-items: center; cursor: pointer; font: 600 20px/1.4 var(--font-sans); }
+.title svg { flex: none; color: var(--red_main); transition: transform .4s; }
+.job[data-open=true] .title svg { transform: rotate(180deg); }
+.title button:focus-visible { outline: 2px solid var(--red_main); outline-offset: -5px; border-radius: 20px; }
+.collapse { display: grid; grid-template-rows: 0fr; opacity: 0; visibility: hidden; transition: grid-template-rows .45s cubic-bezier(.22,1,.36,1), opacity .3s, visibility .45s; }
+.collapse[data-open=true] { grid-template-rows: 1fr; opacity: 1; visibility: visible; }
+.clip { overflow: hidden; min-height: 0; }
+.body { padding: 0 32px 32px; line-height: 1.75; color: #454545; border-top: 1px solid #e6e2e2; background: white; }
+.body h3 { color: #222; margin: 28px 0 12px; font-size: 18px; }
+.body ul { padding-left: 22px; max-width: 100ch; }
+.body li { margin-bottom: 10px; }
 .apply { display: inline-block; margin-top: 20px; background: var(--red_main); color: white; text-decoration: none; border-radius: 12px; padding: 14px 22px; }
-@media(max-width:760px) { .section { width: calc(100% - 32px); padding-left: 0; margin-bottom: 60px; } .job summary { padding: 22px 18px; font-size: 16px; } .body { padding: 0 18px 24px; } }
+@media(max-width:760px) { .section { margin-top: -64px; margin-bottom: 60px; } .title button { padding: 22px 18px; font-size: 17px; } .body { padding: 0 18px 24px; } }
+@media(prefers-reduced-motion:reduce) { .collapse, .title svg { transition: none; } }
+@media(min-width:1440px) { .section { max-width: 1760px; } }

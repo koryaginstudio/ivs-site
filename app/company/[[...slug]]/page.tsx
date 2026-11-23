@@ -1,3 +1,4 @@
+import { DevelopmentPlaceholder } from "@/components/DevelopmentPlaceholder";
 import { getReviews, getVacancies } from "@/lib/company-content";
 import { Vacancies } from "@/components/Vacancies";
 import type { Metadata } from "next";
@@ -36,6 +37,7 @@ export default async function CompanyPage({ params }: Props) {
   if (!page) notFound();
   const slug = route?.[0];
   const isPending = !slug || slug === "licenses" || slug === "partners" || slug === "requisites";
+  if (isPending) return <><Header /><DevelopmentPlaceholder title={page.label} /><Footer /></>;
   const reviews = slug === "reviews" ? await getReviews() : [];
   const vacancies = slug === "vacancy" ? await getVacancies() : [];
 
@@ -51,7 +53,6 @@ export default async function CompanyPage({ params }: Props) {
           </nav>
           <header className={s.head}><h1>{page.label}</h1></header>
           {!isPending && slug !== "reviews" && slug !== "vacancy" && <img className={s.detailImage} src="/about/about-ivs.jpg" alt="" />}
-          {isPending && <p className={s.detailText} style={{padding: "48px 0"}}>В разработке</p>}
           {!isPending && slug !== "partners" && slug !== "reviews" && slug !== "vacancy" &&
             <a href={"https://ivs-corp.ru" + page.href}>Подробнее на сайте ИВС-СЕТИ</a>}
         </article>
