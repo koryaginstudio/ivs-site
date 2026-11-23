@@ -39,7 +39,7 @@ export function Hero({ accent = false }: { accent?: boolean }) {
           </div>
 
           <div className={`${s.actions2} ${s.reveal}`} style={{ "--i": 2 } as React.CSSProperties}>
-            <a href="https://ivs-corp.ru/services/" className={`${s.btn} ${s.btnPrimary}`}>
+            <a href="/services/" className={`${s.btn} ${s.btnPrimary}`}>
               <span className={s.btnChip}>
                 <ArrowIcon />
               </span>

@@ -1,0 +1,127 @@
+{
+  "/services/kompleksnye-proekty-stroitelstva/tsod-i-kommutatsionnye-tsentry/": [
+    "montazh-i-puskonaladochnye-raboty-sistemy-razdeleniya-kholodnogo-i-goryachego-koridorov-i-modernizats",
+    "napolnenie-tsentra-obrabotki-dannykh-filial-azot-ao-okhk-uralkhim",
+    "pereezd-i-nastroyka-tsod-reduktor-pm-v-novyy-ofis",
+    "tsentr-obrabotki-dannykh-tsod-pao-permenergosbyt"
+  ],
+  "/services/kompleksnye-proekty-stroitelstva/kompleksnye-sistemy-bezopasnosti/": [
+    "modernizatsiya-videonablyudeniya-na-obektakh-azot-ao-okhk-uralkhim-v-bereznikakh"
+  ],
+  "/services/kompleksnye-proekty-stroitelstva/uslugi-generalnogo-podryadchika/": [
+    "oborudovanie-kompleksami-tekhnicheskikh-sredstv-severo-kavkazskikh-pogranichnykh-zastav-rossii-genpod"
+  ],
+  "/services/razrabotka-i-vnedrenie-po/razrabotka-zakaznogo-po/": [
+    "vnedrenie-programmnogo-kompleksa-dlya-monitoringa-prokhodyashchego-transporta-upravlenie-mvd-rossii-",
+    "informatsionno-analiticheskaya-sistema-dlya-priemnoy-kompanii-pgmu",
+    "razrabotka-sistemy-avtomatizatsii-zakonotvorcheskoy-deyatelnosti-zakonodatelnogo-sobraniya-permskogo"
+  ],
+  "/services/razrabotka-i-vnedrenie-po/avtomatizatsiya-biznes-protsessov-i-dokumentooborota/": [
+    "vnedrenie-sistemy-upravleniya-elektronnym-bukhgalterskim-dokumentooborotom-na-baze-produktov-1s-v-pa",
+    "sistema-elektronnogo-dokumentooborota-zapadno-uralskogo-banka-sberbanka-rossii-modul-obrabotka-intsi",
+    "avtomatizatsiya-protsessov-soglasovaniya-dokumentov-v-ufrs-pk"
+  ],
+  "/services/razrabotka-i-vnedrenie-po/tekhnicheskaya-podderzhka-i-soprovozhdenie-polzovateley-korporativnykh-informatsionnykh-sistem/": [
+    "modernizatsiya-sistemy-ucheta-obrashcheniy-polzovateley",
+    "servis-korporativnoy-pochty-i-gruppovoy-raboty-dlya-ooo-uk-eks"
+  ],
+  "/services/razrabotka-i-vnedrenie-po/vnedrenie-resheniy-na-baze-produktov-1s/": [
+    "povysheniya-bystrodeystviya-formirovaniya-otchetov-v-biznes-sisteme-na-baze-1s-predpriyatie-8-0",
+    "vnedrenie-sistemy-upravleniya-elektronnym-bukhgalterskim-dokumentooborotom-na-baze-produktov-1s-v-pa"
+  ],
+  "/services/it-infrastruktura-i-bazovyy-servis/proektirovanie-sozdanie-i-zapusk-vychislitelnoy-infrastruktury-zakazchika/": [
+    "postavka-i-vnedrenie-sertifitsirovannoy-platformy-virtualizatsii-dlya-organov-gosudarstvennoy-vlasti",
+    "migratsiya-na-rossiyskuyu-platformu-virtualizatsii",
+    "razrabotka-i-razvertyvanie-virtualnoy-infrastruktury-na-baze-vmware-i-vgate-na-oborudovanii-ibm",
+    "razrabotka-i-razvertyvanie-virtualnoy-infrastruktury-na-baze-microsoft-hyper-v-server-i-vgate-na-obo",
+    "proektirovanie-i-razvertyvanie-it-infrastruktury-v-filialakh-mfts-permskogo-kraya",
+    "razvertyvanie-virtualnoy-infrastruktury-na-baze-rossiyskogo-po"
+  ],
+  "/services/it-infrastruktura-i-bazovyy-servis/organizatsiya-bazovykh-it-servisov-elektronnaya-pochta-internet-lvs-servis-pechati/": [
+    "sozdanie-edinogo-pochtovogo-domena-dlya-gosudarstvennykh-i-munitsipalnykh-uchrezhdeniy",
+    "predostavlenie-servisa-tsentralizovannoy-pechati",
+    "servis-korporativnoy-pochty-i-gruppovoy-raboty",
+    "razvertyvanie-virtualnoy-infrastruktury-na-baze-rossiyskogo-po",
+    "sistema-zvukovogo-veshchaniya-fkp-permskiy-porokhovoy-zavod"
+  ],
+  "/services/it-infrastruktura-i-bazovyy-servis/obsluzhivanie-rabochikh-mest-i-periferii/": [
+    "tsentralnoe-obsluzhivanie-arm-polzovateley",
+    "nastroyka-rabochego-mesta-polzovatelya-v-permskoy-finansovo-proizvodstvennoy-gruppe",
+    "predostavlenie-it-infrastruktury-i-rabochikh-mest-dlya-rabotnikov-bukhgalterskikh-i-kadrovykh-sluzhb"
+  ],
+  "/services/informatsionnaya-bezopasnost/audit-informatsionnoy-bezopasnosti-vychislitelnoy-infrastruktury-new/": [
+    "audit-informatsionnykh-sistem-tfoms-permskogo-kraya-"
+  ],
+  "/services/informatsionnaya-bezopasnost/proektirovanie-i-vnedrenie-sistemy-zashchity-informatsii/": [
+    "raboty-po-sozdaniyu-sistemy-zashchity-informatsionnoy-sistemy-personalnykh-dannykh-informatsionnaya-",
+    "obespechenie-zashchity-konfidentsialnoy-informatsii",
+    "obespechenie-zashchity-personalnykh-dannykh",
+    "ogranizatsiya-zashchishchennogo-i-kontroliruemogo-dostupa-k-lokalnym-setevym-resursam",
+    "zashchita-korporativnoy-seti"
+  ],
+  "/services/informatsionnaya-bezopasnost/zashchita-kriticheskoy-informatsionnoy-infrastruktury/": [],
+  "/services/informatsionnaya-bezopasnost/zashchita-personalnykh-dannykh/": [
+    "raboty-po-sozdaniyu-sistemy-zashchity-informatsionnoy-sistemy-personalnykh-dannykh-informatsionnaya-",
+    "obespechenie-zashchity-personalnykh-dannykh"
+  ],
+  "/services/informatsionnaya-bezopasnost/postavka-ustanovka-nastroyka-administrirovanie-sredstv-obespecheniya-informatsionnoy-bezopasnosti/": [
+    "postavka-i-vnedrenie-v-infrastrukturu-otechestvennogo-ngfw-na-krupnom-promyshlennom-predpriyatii",
+    "obnovlenie-versii-mezhsetevogo-ekrana",
+    "tsentralizovannaya-antivirusnaya-zashchita",
+    "postavka-antivirusa-eset-na-ooo-galo-polimer-kirovo-chepetsk"
+  ],
+  "/services/informatsionnaya-bezopasnost/kaspersky-unified-monitoring-and-analysis-platform/": [],
+  "/services/informatsionnaya-bezopasnost/kaspersky-industrial-cybersecurity/": [],
+  "/services/telekommunikatsionnye-sistemy-i-seti/korporativnye-seti-peredachi-dannykh-besprovodnye-seti-i-vols/": [
+    "proektirovanie-i-stroitelstvo-seti-svyazi-na-territorii-krupnogo-promyshlennogo-predpriyatiya-",
+    "modernizatsiya-seti-peredachi-dannykh",
+    "proektirovanie-realizatsiya-i-peredacha-v-promyshlennuyu-ekspluatatsiyu-korporativnoy-seti-peredachi",
+    "montazh-sistem-svyazi-novobereznikovskoy-tets-i-vypolnenie-rabot-po-modernizatsii-seti-peredachi-dan",
+    "stroitelstvo-vols-uralenergo-soyuz"
+  ],
+  "/services/telekommunikatsionnye-sistemy-i-seti/uchrezhdencheskie-avtomaticheskie-stantsii-telefonnoy-svyazi/": [
+    "sistema-telefonnoy-svyazi-na-obektakh-proizvoditelya-kompleksnykh-udobreniy-",
+    "stroitelstvo-korporativnoy-seti-telefonnoy-svyazi-gruppy-predpriyatiy-sputnik"
+  ],
+  "/services/telekommunikatsionnye-sistemy-i-seti/sistemy-tsifrovoy-radiosvyazi/": [
+    "tsifrovaya-operativnaya-radiosvyaz-ao-inter-rao-elektrogeneratsiya"
+  ],
+  "/services/inzhenernye-sistemy-zdaniy-i-sooruzheniy/pozharno-okhrannaya-signalizatsiya-obektovye-i-perimetralnye-sistemy-zashchity/": [
+    "modernizatsiya-dispetcherskogo-kommutatora-dlya-inter-rao-elektrogeneratsiya-permskaya-gres",
+    "sistemy-pozharnoy-bezopasnosti-na-ao-okhk-uralkhim"
+  ],
+  "/services/inzhenernye-sistemy-zdaniy-i-sooruzheniy/sistemy-promyshlennoy-gromkogovoryashchey-svyazi-i-opoveshcheniya/": [
+    "sistema-zvukovogo-veshchaniya-fkp-permskiy-porokhovoy-zavod"
+  ],
+  "/services/tekhnicheskaya-podderzhka-i-servis-vychislitelnoy-i-orgtekhniki/obespechenie-bespereboynoy-raboty-parka-pechatnogo-oborudovaniya/": [
+    "predostavlenie-servisa-tsentralizovannoy-pechati",
+    "to-parka-pechatnoy-tekhniki-ooo-sveza-uralskiy",
+    "to-parka-pechatnoy-tekhniki-filiala-avisma-pao-korporatsiya-vsmpo-avisma",
+    "to-parka-pechatnoy-tekhniki-filial-yayvinskaya-gres-pao-yunipro",
+    "to-parka-pechatnoy-tekhniki-ooo-evrokhim-ukk"
+  ],
+  "/services/tekhnicheskaya-podderzhka-i-servis-vychislitelnoy-i-orgtekhniki/optimizatsiya-zatrat-na-pechat-i-sistemy-upravleniya-pechatyu/": [
+    "optimizatsiya-zatrat-na-pechat-v-krupnoy-neftyanoy-kompanii"
+  ],
+  "/services/tekhnicheskaya-podderzhka-i-servis-vychislitelnoy-i-orgtekhniki/obespechenie-bespereboynogo-garantirovannogo-elektropitaniya/": [
+    "sozdanie-sistemy-bespereboynogo-pitaniya-servernogo-oborudovaniya-energosnabzhayushchey-kompanii-",
+    "postavka-oborudovaniya-obespechivayushchego-elektropitanie-klassa-a-na-predpriyatii-aviatsionnogo-i-",
+    "obespechenie-raboty-sistem-bespereboynogo-garantirovannogo-elektropitaniya-pao-uralkaliy"
+  ],
+  "/services/tekhnicheskaya-podderzhka-i-servis-vychislitelnoy-i-orgtekhniki/obespechenie-mikroklimata-kriticheski-vazhnykh-obektov/": [
+    "montazh-i-puskonaladochnye-raboty-sistemy-razdeleniya-kholodnogo-i-goryachego-koridorov-i-modernizats",
+    "obespechenie-mikroklimata-i-bespereboynogo-elektropitaniya-ao-permskiy-zavod-mashinostroitel"
+  ],
+  "/services/tekhnicheskaya-podderzhka-i-servis-vychislitelnoy-i-orgtekhniki/garantiynyy-i-poslegarantiynyy-remont-vychislitelnogo-i-periferiynogo-oborudovaniya-avtorizovannyy-s/": [],
+  "/services/tekhnicheskaya-podderzhka-i-servis-vychislitelnoy-i-orgtekhniki/postavka-zapasnykh-chastey-i-raskhodnykh-materialov/": [],
+  "/services/postavka-oborudovaniya-i-po/postavka-zakaznogo-oborudovaniya/": [
+    "postavka-sistemy-khraneniya-dannykh-storage-huawei-dlya-ao-permskiy-porokhovoy-zavod",
+    "postavka-oborudovaniya-dispetchirovaniya-proizvodstva-na-chaykovskiy-filial-ao-gazprom-bytovye-siste",
+    "postavka-komplektov-personalnogo-kompyutera-tonkogo-klienta-i-monoblokov-na-ao-permskiy-porokhovoy-z",
+    "postavka-oborudovaniya-dlya-mnogofunktsionalnogo-migratsionnogo-tsentra"
+  ],
+  "/services/postavka-oborudovaniya-i-po/konsultirovanie-po-litsenzionnym-politikam-proizvoditeley/": [
+    "litsenzii-dlya-oborudovaniya-i-smartnet-cisco-na-pao-permenergosbyt",
+    "zakupka-litsenziy-dlya-ministerstva-territorialnoy-bezopasnosti-permskogo-kraya"
+  ]
+}

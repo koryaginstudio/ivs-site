@@ -303,11 +303,20 @@ export function Header() {
                       <Chevron />
                     </summary>
                     <ul>
-                      {(item.kind === "menu" ? item.items : item.groups).map((l) => (
-                        <li key={l.label}>
-                          <a href={l.href} tabIndex={sheet ? 0 : -1}>
-                            {l.label}
-                          </a>
+                      {item.kind === "menu" ? item.items.map(l => (
+                        <li key={l.label}><a href={l.href} tabIndex={sheet ? 0 : -1}>{l.label}</a></li>
+                      )) : item.groups.map((g, gi) => (
+                        <li key={g.href}>
+                          <details className={s.sheetService}>
+                            <summary tabIndex={sheet ? 0 : -1}>
+                              <span className={s.sheetServiceIcon} aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{DIRECTION_ICONS[SERVICE_GROUP_ICONS[gi] ?? "box"]}</svg></span>
+                              <span>{g.label}</span><Chevron />
+                            </summary>
+                            <ul>
+                              <li><a href={g.href} tabIndex={sheet ? 0 : -1}>Все услуги направления ↗</a></li>
+                              {g.items.map(l => <li key={l.href}><a href={l.href} tabIndex={sheet ? 0 : -1}>{l.label}</a></li>)}
+                            </ul>
+                          </details>
                         </li>
                       ))}
                     </ul>

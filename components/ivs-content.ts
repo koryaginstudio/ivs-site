@@ -9,7 +9,7 @@ export type NavItem =
   | { kind: "menu"; label: string; href: string; items: NavLink[] }
   | { kind: "mega"; label: string; href: string; groups: NavGroup[] };
 
-const S = "https://ivs-corp.ru/services/";
+const S = "/services/";
 
 export const nav: NavItem[] = [
   {
