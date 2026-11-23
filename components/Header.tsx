@@ -2,14 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { nav, phone, type DirectionIcon, type NavItem } from "@/components/ivs-content";
-import { DIRECTION_ICONS } from "@/components/direction-icons";
+import { nav, phone, type NavItem } from "@/components/ivs-content";
+import { DIRECTION_ICONS, SERVICE_GROUP_ICONS } from "@/components/direction-icons";
 import s from "../app/home.module.css";
 
 const CLOSE_DELAY = 140;
-
-// Иконки групп мега-меню «Услуги» — в порядке групп с ivs-corp.ru (как в карточках направлений).
-const GROUP_ICONS: DirectionIcon[] = ["building", "code", "server", "shield", "network", "bolt", "support", "box"];
 
 function Chevron() {
   return (
@@ -165,7 +162,7 @@ export function Header() {
                     >
                       <span className={s.megaIcon} aria-hidden="true">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                          {DIRECTION_ICONS[GROUP_ICONS[gi] ?? "box"]}
+                          {DIRECTION_ICONS[SERVICE_GROUP_ICONS[gi] ?? "box"]}
                         </svg>
                       </span>
                       <span className={s.megaGroupLabel}>{g.label}</span>
@@ -204,7 +201,7 @@ export function Header() {
   return (
     <header className={s.header} ref={root}>
       <div className={s.bar}>
-        <a href="https://ivs-corp.ru/" className={s.logo} aria-label="ИВС-СЕТИ — на главную">
+        <a href="/" className={s.logo} aria-label="ИВС-СЕТИ — на главную">
           {/* актуальный знак компании: градиентный квадрат с микросхемой (файл Антона, 23.11) */}
           <img src="/ivs-mark-v2.svg" width={44} height={44} alt="" />
         </a>

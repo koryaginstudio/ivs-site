@@ -110,9 +110,9 @@ export const nav: NavItem[] = [
       },
     ],
   },
-  { kind: "link", label: "Каталог проектов", href: "https://ivs-corp.ru/projects/" },
+  { kind: "link", label: "Каталог проектов", href: "/projects/" },
   { kind: "link", label: "Новости", href: "/info/news/" },
-  { kind: "link", label: "Контакты", href: "https://ivs-corp.ru/contacts/" },
+  { kind: "link", label: "Контакты", href: "/contacts/" },
   {
     kind: "menu",
     label: "Продукты",
@@ -239,7 +239,7 @@ export const about = {
 };
 
 // Проекты - данные переехали в слой lib/projects (Supabase + локальный снапшот lib/projects-seed.ts).
-export const projectsCatalogHref = "https://ivs-corp.ru/projects/";
+export const projectsCatalogHref = "/projects/";
 
 // Новости/мероприятия - данные переехали в слой lib/news (Supabase + локальный снапшот lib/news-seed.ts).
 export const newsHref = "/info/news/";
@@ -260,7 +260,7 @@ export const contacts = {
     { city: "Березники", detail: "ул. Юбилейная, 46", tel: "+7 (3424) 260-409", mail: "berezniki@ivs-corp.ru" },
     { city: "Киров", detail: "Октябрьский пр-т, 104, офис 227/2", tel: "+7 (8332) 41-96-03", mail: "kirov@ivs-corp.ru" },
   ],
-  href: "https://ivs-corp.ru/contacts/",
+  href: "/contacts/",
 };
 
 // Реквизиты — с iteventpermkrai.tilda.ws и футера ivs-corp.ru.

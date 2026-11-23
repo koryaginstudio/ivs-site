@@ -53,7 +53,7 @@ export function projectEntries(projects: ProjectPost[]): SearchEntry[] {
     title: p.title,
     category: "Проекты",
     href: p.sourceUrl,
-    text: [p.industry, p.description, String(p.year)].filter(Boolean).join(" "),
+    text: [p.industry, p.description, p.year > 0 ? String(p.year) : null].filter(Boolean).join(" "),
   }));
 }
 

@@ -619,9 +619,7 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  grid-template-areas:
-    "copy visual"
-    "stats visual";
+  grid-template-areas: "copy visual";
   align-items: center;
   column-gap: var(--space-48);
   row-gap: var(--space-48);
@@ -1248,8 +1246,7 @@
     grid-template-columns: 1fr;
     grid-template-areas:
       "copy"
-      "visual"
-      "stats";
+      "visual";
     min-height: 0;
     padding: var(--space-32) var(--space-24);
     border-radius: var(--radius-20);

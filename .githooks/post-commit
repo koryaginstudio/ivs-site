@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# После каждого локального коммита отправляем текущую ветку на GitHub.
+branch=$(git symbolic-ref --quiet --short HEAD) || {
+  echo "[post-commit] HEAD не привязан к ветке, автоматическая отправка пропущена."
+  exit 0
+}
+
+echo "[post-commit] Отправляю ветку $branch на GitHub..."
+if git push origin "HEAD:refs/heads/$branch"; then
+  echo "[post-commit] GitHub обновлён: origin/$branch."
+else
+  echo "[post-commit] Коммит сохранён локально, но отправка не удалась." >&2
+  echo "[post-commit] Проверьте доступ к GitHub и выполните: git push origin HEAD" >&2
+fi
+
+# Ошибка сети не отменяет уже созданный локальный коммит.
+exit 0

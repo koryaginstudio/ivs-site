@@ -3,6 +3,7 @@
 import { Reveal } from "./Reveal";
 import { useEffect, useRef, useState } from "react";
 import { nav } from "@/components/ivs-content";
+import { DIRECTION_ICONS, SERVICE_GROUP_ICONS } from "@/components/direction-icons";
 import { SectionHead } from "./SectionHead";
 import s from "../app/home.module.css";
 import styles from "./Services.module.css";
@@ -31,6 +32,8 @@ function subserviceLabel(count: number) {
 
 export function Services() {
   const [active, setActive] = useState(0);
+  const [displayActive, setDisplayActive] = useState(0);
+  const [previewVisible, setPreviewVisible] = useState(true);
   const [open, setOpen] = useState(-1); // по умолчанию все направления закрыты
   // аккордеон: клик раскрывает панель и переключает видео, повторный клик закрывает;
   // переход на страницу направления - по ссылке «Открыть направление» внутри панели
@@ -57,6 +60,22 @@ export function Services() {
   }, []);
 
   useEffect(() => {
+    if (active === displayActive) return;
+    if (reducedMotion) {
+      setDisplayActive(active);
+      setPreviewVisible(true);
+      return;
+    }
+
+    setPreviewVisible(false);
+    const timer = window.setTimeout(() => {
+      setDisplayActive(active);
+      setPreviewVisible(true);
+    }, 180);
+    return () => window.clearTimeout(timer);
+  }, [active, displayActive, reducedMotion]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     if (reducedMotion) {
@@ -67,7 +86,7 @@ export function Services() {
         // Poster остаётся видимым, если браузер запретил автовоспроизведение.
       });
     }
-  }, [active, reducedMotion]);
+  }, [displayActive, reducedMotion]);
 
   useEffect(() => {
     const rail = previewRailRef.current;
@@ -134,8 +153,8 @@ export function Services() {
 
   if (services?.kind !== "mega") return null;
 
-  const current = services.groups[active] ?? services.groups[0];
-  const preview = previews[active] ?? previews[0];
+  const current = services.groups[displayActive] ?? services.groups[0];
+  const preview = previews[displayActive] ?? previews[0];
 
   return (
     <Reveal as="section" id="services" className={`${s.section} ${s.sectionMuted}`} ariaLabel="Услуги">
@@ -152,17 +171,23 @@ export function Services() {
                 className={styles.item}
                 key={group.href}
                 data-open={isOpen}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") setActive(index);
+                }}
               >
                 <button
                   type="button"
                   id={triggerId}
                   className={styles.trigger}
                   onClick={() => toggle(index)}
+                  onFocus={() => setActive(index)}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                 >
-                  <span className={styles.index} aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
+                  <span className={styles.icon} aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      {DIRECTION_ICONS[SERVICE_GROUP_ICONS[index] ?? "box"]}
+                    </svg>
                   </span>
                   <span className={styles.label}>{group.label}</span>
                   <span className={styles.toggle} aria-hidden="true">
@@ -211,10 +236,10 @@ export function Services() {
         </ol>
 
         <div className={styles.previewRail} ref={previewRailRef}>
-          <figure className={styles.preview} ref={previewRef}>
+          <figure className={styles.preview} ref={previewRef} data-switching={!previewVisible || undefined}>
             <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
               <video
-                key={active}
+                key={displayActive}
                 ref={videoRef}
                 className={styles.video}
                 src={preview.video}

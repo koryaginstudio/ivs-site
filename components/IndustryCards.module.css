@@ -1,5 +1,9 @@
 .intro {
-  margin-bottom: var(--space-32);
+  margin-bottom: clamp(40px, 4vw, 64px);
+}
+
+.headingAccent {
+  color: var(--Dark_text_elements);
 }
 
 .intro > div {
@@ -13,8 +17,78 @@
   font: 400 16px/1.6 var(--font-sans);
 }
 
-.intro strong {
+.introStatement {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  padding: clamp(28px, 3vw, 44px) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.proof {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-12, 12px);
+  padding: 0 clamp(24px, 3vw, 48px);
+}
+
+.proof:first-child {
+  padding-left: 0;
+}
+
+.proof:last-child {
+  padding-right: 0;
+}
+
+.proof + .proof {
+  border-left: 1px solid var(--line);
+}
+
+.proofValue {
+  color: var(--red_main);
+  font: 600 clamp(48px, 4.6vw, 76px)/0.95 var(--font-sans);
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.proofLabel {
+  max-width: 28ch;
   color: var(--Dark_text_elements);
+  font: 500 16px/1.45 var(--font-sans);
+}
+
+@media (max-width: 760px) {
+  .introStatement {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .proof,
+  .proof:first-child,
+  .proof:last-child {
+    padding: var(--space-24) 0;
+  }
+
+  .proof:first-child {
+    padding-top: 0;
+  }
+
+  .proof:last-child {
+    padding-bottom: 0;
+  }
+
+  .proof + .proof {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .proofValue {
+    font-size: 56px;
+  }
 }
 
 .industryCard .media {

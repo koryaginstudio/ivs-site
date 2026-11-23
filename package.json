@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "local": "node scripts/local.mjs",
+    "prepare": "node scripts/install-git-hooks.mjs",
     "build": "next build",
     "start": "next start"
   },

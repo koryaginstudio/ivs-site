@@ -33,7 +33,9 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
   // годы по убыванию со счётчиками проектов
   const years = useMemo(() => {
     const map = new Map<number, number>();
-    for (const p of projects) map.set(p.year, (map.get(p.year) ?? 0) + 1);
+    for (const p of projects) {
+      if (p.year > 0) map.set(p.year, (map.get(p.year) ?? 0) + 1);
+    }
     return [...map.entries()].sort((a, b) => b[0] - a[0]);
   }, [projects]);
 
@@ -144,7 +146,7 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
                 </span>
                 <span className={s.projMeta}>
                   {p.industry ? <span className={s.projIndustry}>{p.industry}</span> : null}
-                  <span className={s.projYear}>{p.year}</span>
+                  {p.year > 0 ? <span className={s.projYear}>{p.year}</span> : null}
                 </span>
                 <span className={s.projCardTitle}>{p.title}</span>
                 {p.description ? <span className={s.projDesc}>{p.description}</span> : null}

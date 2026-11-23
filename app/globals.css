@@ -103,22 +103,37 @@ a {
   color: var(--white_text_elements);
 }
 
-/* --- Появление секций при скролле (компонент Reveal) --- */
-.revealOn {
+/* --- Последовательное появление содержимого секций при скролле --- */
+.revealOn > * {
+  visibility: hidden;
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(28px);
   transition:
-    opacity 600ms var(--ease-out) var(--d, 0ms),
-    transform 600ms var(--ease-out) var(--d, 0ms);
+    opacity 680ms var(--ease-out) var(--d, 0ms),
+    transform 680ms var(--ease-out) var(--d, 0ms);
 }
 
-.revealOn[data-show] {
+.revealOn > *:nth-child(2) {
+  transition-delay: calc(var(--d, 0ms) + 90ms);
+}
+
+.revealOn > *:nth-child(3) {
+  transition-delay: calc(var(--d, 0ms) + 180ms);
+}
+
+.revealOn > *:nth-child(n + 4) {
+  transition-delay: calc(var(--d, 0ms) + 270ms);
+}
+
+.revealOn[data-show] > * {
+  visibility: visible;
   opacity: 1;
   transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .revealOn {
+  .revealOn > * {
+    visibility: visible;
     opacity: 1;
     transform: none;
     transition: none;

@@ -58,7 +58,7 @@ export function Footer() {
 
           <nav className={s.footerCol} aria-label="Разделы">
             <span className={s.footerColTitle}>Разделы</span>
-            <a href="https://ivs-corp.ru/projects/" className={s.footerLink}>
+            <a href="/projects/" className={s.footerLink}>
               Каталог проектов
             </a>
             <a href="/info/news/" className={s.footerLink}>
@@ -67,7 +67,7 @@ export function Footer() {
             <a href="https://iteventpermkrai.tilda.ws/" className={s.footerLink}>
               Мероприятия
             </a>
-            <a href="https://ivs-corp.ru/contacts/" className={s.footerLink}>
+            <a href="/contacts/" className={s.footerLink}>
               Контакты
             </a>
             <a href="https://link-services-ivs.tilda.ws/" className={s.footerLink}>

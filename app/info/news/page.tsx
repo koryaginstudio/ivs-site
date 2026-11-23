@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { NewsArchive } from "@/components/NewsArchive";
-import { formatNewsDate, getLatestNews, kindLabel, newsItemHref } from "@/lib/news";
+import { formatNewsDate, getLatestNews, newsItemHref } from "@/lib/news";
 import s from "./news.module.css";
 
 export const revalidate = 300;
@@ -16,8 +16,6 @@ export const metadata: Metadata = {
 export default async function NewsPage() {
   const items = await getLatestNews(100);
   const [featured, ...archive] = items;
-  const years = items.map((item) => item.publishedAt.slice(0, 4));
-  const range = years.length ? `${years[years.length - 1]}–${years[0]}` : "";
 
   return (
     <>
@@ -31,7 +29,6 @@ export default async function NewsPage() {
 
         <header className={s.pageHead}>
           <h1>Новости</h1>
-          <p>{items.length} материалов <span>·</span> {range}</p>
         </header>
 
         {featured ? (
@@ -39,7 +36,7 @@ export default async function NewsPage() {
             <Link href={newsItemHref(featured.slug)} className={s.featuredLink}>
               <span className={s.featuredCopy}>
                 <span className={s.meta}>
-                  <span>{kindLabel[featured.kind]}</span>
+                  <span>Последняя новость</span>
                   <time dateTime={featured.publishedAt}>{formatNewsDate(featured.publishedAt)}</time>
                 </span>
                 <h2>{featured.title}</h2>

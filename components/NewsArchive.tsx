@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { NewsPost } from "@/lib/news";
 import { formatNewsDate, kindLabel, newsItemHref } from "@/lib/news-format";
@@ -21,15 +21,36 @@ export function NewsArchive({ items }: { items: NewsPost[] }) {
   );
   const [year, setYear] = useState("all");
   const [previewSlug, setPreviewSlug] = useState(items[0]?.slug ?? "");
+  const [displayedSlug, setDisplayedSlug] = useState(items[0]?.slug ?? "");
+  const [previewVisible, setPreviewVisible] = useState(true);
 
   const filtered = year === "all" ? items : items.filter((item) => item.publishedAt.startsWith(year));
-  const preview = filtered.find((item) => item.slug === previewSlug) ?? filtered[0];
+  const selectedPreview = filtered.find((item) => item.slug === previewSlug) ?? filtered[0];
+  const preview = filtered.find((item) => item.slug === displayedSlug) ?? filtered[0];
 
   const selectYear = (nextYear: string) => {
     const nextItems = nextYear === "all" ? items : items.filter((item) => item.publishedAt.startsWith(nextYear));
     setYear(nextYear);
     setPreviewSlug(nextItems[0]?.slug ?? "");
   };
+
+  useEffect(() => {
+    const nextSlug = selectedPreview?.slug ?? "";
+    if (nextSlug === displayedSlug) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplayedSlug(nextSlug);
+      setPreviewVisible(true);
+      return;
+    }
+
+    setPreviewVisible(false);
+    const timer = window.setTimeout(() => {
+      setDisplayedSlug(nextSlug);
+      setPreviewVisible(true);
+    }, 140);
+    return () => window.clearTimeout(timer);
+  }, [selectedPreview?.slug, displayedSlug]);
 
   return (
     <section className={s.archive} aria-labelledby="news-archive-title">
@@ -64,16 +85,22 @@ export function NewsArchive({ items }: { items: NewsPost[] }) {
             {filtered.map((item, index) => {
               const itemYear = item.publishedAt.slice(0, 4);
               const showYear = index === 0 || filtered[index - 1].publishedAt.slice(0, 4) !== itemYear;
-              const active = preview?.slug === item.slug;
+              const active = selectedPreview?.slug === item.slug;
               return (
                 <li
                   key={item.slug}
                   className={s.newsRow}
                   data-active={active || undefined}
-                  onMouseEnter={() => setPreviewSlug(item.slug)}
-                  onFocus={() => setPreviewSlug(item.slug)}
+                  data-year-start={showYear && index > 0 ? true : undefined}
                 >
-                  <Link href={newsItemHref(item.slug)} className={s.newsRowLink}>
+                  <Link
+                    href={newsItemHref(item.slug)}
+                    className={s.newsRowLink}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType === "mouse") setPreviewSlug(item.slug);
+                    }}
+                    onFocus={() => setPreviewSlug(item.slug)}
+                  >
                     <span className={s.rowYear} aria-hidden={!showYear}>{showYear ? itemYear : ""}</span>
                     <span className={s.rowContent}>
                       <span className={s.rowTitle}>{item.title}</span>
@@ -100,7 +127,7 @@ export function NewsArchive({ items }: { items: NewsPost[] }) {
           </ol>
 
           {preview ? (
-            <aside className={s.previewPane} aria-label="Превью выбранной публикации">
+            <aside className={s.previewPane} aria-label="Превью выбранной публикации" data-switching={!previewVisible || undefined}>
               <Link href={newsItemHref(preview.slug)} className={s.previewLink} tabIndex={-1} aria-hidden="true">
                 <span className={s.previewMedia} key={preview.slug}>
                   {preview.image ? <img src={preview.image} alt="" /> : null}

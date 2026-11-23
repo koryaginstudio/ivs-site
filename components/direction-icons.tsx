@@ -1,5 +1,8 @@
 import type { DirectionIcon } from "./ivs-content";
 
+// Единый порядок иконок для мега-меню шапки и аккордеона услуг.
+export const SERVICE_GROUP_ICONS: DirectionIcon[] = ["building", "code", "server", "shield", "network", "bolt", "support", "box"];
+
 // Пути иконок направлений (viewBox 0 0 24 24). Цвет и толщину задаёт обёртка <svg>.
 // Линейные иконки одной толщины (ДС: иконки линейные, цветом red_main).
 export const DIRECTION_ICONS: Record<DirectionIcon, React.ReactNode> = {

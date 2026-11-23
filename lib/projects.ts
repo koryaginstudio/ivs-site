@@ -1,4 +1,5 @@
 import { projectsSeed } from "./projects-seed";
+import { industryFilters } from "./project-filters";
 
 // ================= Слой данных проектов =================
 // Как и новости: Supabase, если заданы ключи в .env.local, иначе локальный снапшот
@@ -9,6 +10,9 @@ export type ProjectPost = {
   slug: string;
   title: string;
   industry: string | null;
+  industryId: number | null;
+  competencyIds: number[];
+  // 0 означает, что год не указан в оригинальном каталоге.
   year: number;
   description: string | null;
   image: string | null;
@@ -29,6 +33,8 @@ const fromRow = (r: ProjectRow): ProjectPost => ({
   slug: r.slug,
   title: r.title,
   industry: r.industry,
+  industryId: industryFilters.find((item) => item.label === r.industry)?.id ?? null,
+  competencyIds: [],
   year: r.year,
   description: r.description,
   image: r.image_url,
@@ -64,5 +70,6 @@ export async function getProjects(): Promise<ProjectPost[]> {
       console.warn("[projects] Supabase недоступен, отдаю локальный снапшот:", (e as Error).message);
     }
   }
-  return [...projectsSeed].sort((a, b) => b.year - a.year);
+  // Сохраняем порядок оригинального каталога.
+  return [...projectsSeed];
 }

@@ -1,0 +1,343 @@
+.page {
+  --container: 1440px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --hairline: #e9e7e7;
+  --ease-hover: cubic-bezier(0.22, 1, 0.36, 1);
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 28px var(--gutter) 96px;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: clamp(36px, 5vw, 56px);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.breadcrumbs a {
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-soft);
+}
+
+.breadcrumbs > span:last-child {
+  color: var(--Dark_text_elements);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+  padding-bottom: clamp(32px, 4vw, 48px);
+  border-bottom: 1px solid var(--line);
+}
+
+.head h1 {
+  margin: 0;
+  font: 600 clamp(48px, 5vw, 72px)/0.95 var(--font-sans);
+  letter-spacing: -0.045em;
+}
+
+.head p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--text-muted);
+  font: 400 16px/1.65 var(--font-sans);
+  text-wrap: pretty;
+}
+
+.catalog {
+  padding-top: clamp(28px, 3vw, 40px);
+  scroll-margin-top: 96px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-16);
+}
+
+.filter {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filterLabel {
+  color: var(--text-muted);
+  font: 500 12px/16px var(--font-sans);
+}
+
+.selectWrap {
+  position: relative;
+  display: block;
+}
+
+.selectWrap select {
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 48px 14px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-12);
+  appearance: none;
+  background: var(--surface-100);
+  color: var(--Dark_text_elements);
+  font: 500 14px/20px var(--font-sans);
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-soft), box-shadow var(--duration-fast) var(--ease-soft);
+}
+
+.selectWrap svg {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.selectWrap select:hover {
+  border-color: var(--line-strong);
+}
+
+.selectWrap select:focus-visible {
+  border-color: var(--red_main);
+  box-shadow: 0 0 0 3px rgba(216, 52, 55, 0.12);
+  outline: 0;
+}
+
+.resultBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 24px 0;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.resultBar p {
+  margin: 0;
+  color: var(--text-muted);
+  font: 400 14px/20px var(--font-sans);
+}
+
+.resultBar strong {
+  color: var(--Dark_text_elements);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.reset {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--red_main);
+  font: 500 13px/18px var(--font-sans);
+  cursor: pointer;
+}
+
+.reset:disabled {
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: default;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grid > li {
+  min-width: 0;
+}
+
+.card {
+  min-height: 100%;
+}
+
+.card .media {
+  aspect-ratio: 4 / 3;
+}
+
+.card:focus-visible {
+  border-radius: var(--radius-20);
+}
+
+.empty {
+  padding: clamp(48px, 8vw, 96px) 24px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  text-align: center;
+}
+
+.empty h2 {
+  margin: 0;
+  font: 600 clamp(24px, 3vw, 36px)/1.15 var(--font-sans);
+  letter-spacing: -0.03em;
+}
+
+.empty p {
+  margin: 16px auto 0;
+  color: var(--text-muted);
+  font: 400 16px/1.6 var(--font-sans);
+}
+
+.empty button {
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--radius-12);
+  background: var(--red_main);
+  color: var(--white_text_elements);
+  font: 600 14px/20px var(--font-sans);
+  cursor: pointer;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.pagination > button,
+.pageNumber {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-12);
+  background: var(--surface-100);
+  color: var(--Dark_text_elements);
+  font: 500 14px/18px var(--font-sans);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-soft), background-color var(--duration-fast) var(--ease-soft), color var(--duration-fast) var(--ease-soft);
+}
+
+.pageNumbers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: var(--red_main);
+}
+
+.pagination button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pageNumber[data-active] {
+  border-color: var(--red_main);
+  background: var(--red_main);
+  color: var(--white_text_elements);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumbs a:hover {
+    color: var(--red_main);
+  }
+}
+
+@media (max-width: 1050px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .head {
+    grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1fr);
+    gap: 40px;
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding-top: 20px;
+    padding-bottom: 64px;
+  }
+
+  .head {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .head h1 {
+    font-size: 48px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .selectWrap select {
+    font-size: 16px;
+  }
+
+  .resultBar {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultBar {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pagination {
+    gap: 8px;
+    margin-top: 36px;
+  }
+
+  .pageNumbers {
+    gap: 6px;
+  }
+
+  .pagination > button,
+  .pageNumber {
+    width: 40px;
+    height: 44px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .page {
+    --container: 1760px;
+    --gutter: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumbs a,
+  .selectWrap select,
+  .pagination button {
+    transition: none;
+  }
+}

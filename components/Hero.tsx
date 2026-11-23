@@ -1,4 +1,4 @@
-import { heroV2, stats } from "@/components/ivs-content";
+import { heroV2 } from "@/components/ivs-content";
 import { Header } from "./Header";
 import s from "../app/home.module.css";
 
@@ -10,7 +10,7 @@ function ArrowIcon() {
   );
 }
 
-// Один продающий экран: заголовок, описание, две кнопки, три карточки с цифрами и место под 3D-иллюстрацию.
+// Один продающий экран: заголовок, описание, две кнопки и 3D-иллюстрация.
 // accent — версия 2.2: плашка залита радиальным градиентом акцентного цвета (референс — cortel.cloud/importozameshhenie-vmware).
 export function Hero({ accent = false }: { accent?: boolean }) {
   return (
@@ -34,7 +34,7 @@ export function Hero({ accent = false }: { accent?: boolean }) {
                 </span>
                 Все услуги
               </a>
-              <a href="https://ivs-corp.ru/projects/" className={`${s.btn} ${s.btnSecondary}`}>
+              <a href="/projects/" className={`${s.btn} ${s.btnSecondary}`}>
                 <span className={s.btnChip}>
                   <ArrowIcon />
                 </span>
@@ -42,15 +42,6 @@ export function Hero({ accent = false }: { accent?: boolean }) {
               </a>
             </div>
           </div>
-
-          <ul className={s.stats} aria-label="ИВС в цифрах">
-            {stats.map((st, i) => (
-              <li key={st.label} className={`${s.stat} ${s.reveal}`} style={{ "--i": 3 + i } as React.CSSProperties}>
-                <span className={s.statValue}>{st.value}</span>
-                <span className={s.statLabel}>{st.label}</span>
-              </li>
-            ))}
-          </ul>
 
           {/* 3D-иллюстрация акцентного цвета; за ней — мягкое красное свечение */}
           <div className={`${s.visual} ${s.reveal}`} style={{ "--i": 1 } as React.CSSProperties}>

@@ -16,6 +16,14 @@ if (major < 20 || (major === 20 && minor < 9)) {
   process.exit(1);
 }
 
+const hooks = spawnSync(process.execPath, [path.join(root, "scripts", "install-git-hooks.mjs")], {
+  cwd: root,
+  stdio: "inherit",
+});
+if (hooks.error || hooks.status !== 0) {
+  process.exit(hooks.status || 1);
+}
+
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 if (!existsSync(path.join(root, "node_modules", "next", "package.json"))) {
   console.log("Устанавливаю зависимости при первом запуске...");

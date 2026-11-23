@@ -11,7 +11,7 @@ type RevealProps = {
   children: ReactNode;
 };
 
-// Появление блока при входе в зону видимости: подъём на 24px + проявление 600ms.
+// Появление содержимого при входе в зону видимости: заголовок и контент раскрываются последовательно.
 // Срабатывает один раз, при prefers-reduced-motion блок виден сразу без анимации.
 export function Reveal({ as: Tag = "div", className, id, ariaLabel, delay = 0, children }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
@@ -31,8 +31,8 @@ export function Reveal({ as: Tag = "div", className, id, ariaLabel, delay = 0, c
           io.disconnect();
         }
       },
-      // срабатывает чуть раньше края экрана, чтобы движение встречало скролл
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+      // запускаем до входа в viewport: к моменту появления первой строки анимация уже идёт
+      { threshold: 0.04, rootMargin: "0px 0px 14% 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
