@@ -2832,4 +2832,4 @@
 }
 
 @media(min-width:1200px) { .glassScene { transform: translateX(-48px); } }
-.heroModel[data-mode="webgl"] { touch-action: none; }
+.heroModel[data-mode="webgl"] { touch-action: pan-y; }

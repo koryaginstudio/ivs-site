@@ -66,9 +66,8 @@ export function HeroIllustration() {
   const [mode, setMode] = useState<"webgl" | "frames">("webgl");
   const drawRef = useRef<(() => void) | null>(null);
   const angle = useRef(0);
-  const tilt = useRef(0);
   const interactionUntil = useRef(0);
-  const drag = useRef<{ pointerId: number; x: number; y: number; angle: number; tilt: number } | null>(null);
+  const drag = useRef<{ pointerId: number; x: number; angle: number } | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -115,9 +114,8 @@ export function HeroIllustration() {
 
       function draw(now: number) {
         if (!contextLost) {
-          activeScene.render(angle.current, reduceMotion.matches ? 0 : (now - start) / 1000, tilt.current);
+          activeScene.render(angle.current, reduceMotion.matches ? 0 : (now - start) / 1000);
           canvas.dataset.rotation = String(angle.current);
-          canvas.dataset.tilt = String(tilt.current);
         }
       }
 
@@ -132,13 +130,12 @@ export function HeroIllustration() {
         if (elapsed < 1000 / 24) return;
         lastFrame = now;
         if (!visible || document.hidden || contextLost) return;
-        if (reduceMotion.matches && !drag.current && Math.abs(angle.current) < 0.00001 && Math.abs(tilt.current) < 0.00001) return;
+        if (reduceMotion.matches && !drag.current && Math.abs(angle.current) < 0.00001) return;
 
         if (!drag.current && now >= interactionUntil.current) {
           const target = reduceMotion.matches ? 0 : maxAngle * Math.sin((now - start) * fullTurn / period);
           const ease = reduceMotion.matches ? 1 : 1 - Math.exp(-Math.min(elapsed, 100) / 850);
           angle.current = wrapAngle(angle.current + wrapAngle(target - angle.current) * ease);
-          tilt.current = wrapAngle(tilt.current + wrapAngle(-tilt.current) * ease);
         }
         draw(now);
       }
@@ -194,7 +191,7 @@ export function HeroIllustration() {
 
   function startDrag(event: PointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || event.button !== 0 || !ready) return;
-    drag.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, angle: angle.current, tilt: tilt.current };
+    drag.current = { pointerId: event.pointerId, x: event.clientX, angle: angle.current };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
@@ -202,7 +199,6 @@ export function HeroIllustration() {
     const active = drag.current;
     if (!active || active.pointerId !== event.pointerId) return;
     angle.current = wrapAngle(active.angle + (event.clientX - active.x) * .009);
-    if (mode === "webgl") tilt.current = wrapAngle(active.tilt + (event.clientY - active.y) * .009);
     drawRef.current?.();
   }
 
@@ -213,11 +209,10 @@ export function HeroIllustration() {
   }
 
   function turnWithKeys(event: KeyboardEvent<HTMLDivElement>) {
-    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
-    const direction = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") angle.current = wrapAngle(angle.current + direction * Math.PI / 45);
-    else if (mode === "webgl") tilt.current = wrapAngle(tilt.current + direction * Math.PI / 45);
+    const direction = event.key === "ArrowLeft" ? -1 : 1;
+    angle.current = wrapAngle(angle.current + direction * Math.PI / 45);
     interactionUntil.current = performance.now() + resumeDelay;
     drawRef.current?.();
   }
@@ -228,7 +223,7 @@ export function HeroIllustration() {
       data-ready={ready}
       data-mode={mode}
       tabIndex={ready ? 0 : -1}
-      aria-label={ready ? "3D-иллюстрация сети кибербезопасности. Перетащите или нажмите стрелку в любом направлении, чтобы повернуть на 360 градусов по горизонтали и вертикали. После отпускания иллюстрация плавно возвращается." : undefined}
+      aria-label={ready ? "3D-иллюстрация сети кибербезопасности. Перетащите или нажмите стрелку влево или вправо, чтобы повернуть на 360 градусов по горизонтали. После отпускания иллюстрация плавно возвращается." : undefined}
       onPointerDown={startDrag}
       onPointerMove={moveDrag}
       onPointerUp={finishDrag}

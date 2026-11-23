@@ -135,8 +135,8 @@ export function createHeroScene(canvas,context) {
       renderer.setPixelRatio(Math.min(2.5,Math.max(1.6,window.devicePixelRatio)));
       renderer.setSize(clientWidth,clientHeight,false);
     },
-    render(angle,time,tilt = 0) {
-      icon.rotation.set(tilt, angle, 0, "YXZ");
+    render(angle,time) {
+      icon.rotation.y = angle;
       softShadows.rotation.y = angle;
       mixer.setTime(time);
       renderer.render(scene,camera);
