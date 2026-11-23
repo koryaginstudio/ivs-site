@@ -13,15 +13,16 @@ type Renderer = ReturnType<typeof import("./hero-cybersecurity-renderer.mjs").cr
 
 async function createFrameRenderer(canvas: HTMLCanvasElement): Promise<Renderer> {
   const atlas = new Image();
-  atlas.src = "/hero/cybersecurity-v4-turn.webp";
+  atlas.src = "/hero/cybersecurity-v5-turn.webp";
   await atlas.decode();
   const renderingContext = canvas.getContext("2d");
   if (!renderingContext) throw new Error("Не удалось открыть панораму первого экрана");
   const context = renderingContext;
+  context.imageSmoothingQuality = "high";
 
-  const tile = 480;
-  const columns = 7;
-  const lastFrame = 40;
+  const tile = 800;
+  const columns = 6;
+  const lastFrame = 29;
 
   function paint(index: number) {
     context.drawImage(
@@ -32,9 +33,10 @@ async function createFrameRenderer(canvas: HTMLCanvasElement): Promise<Renderer>
 
   return {
     resize() {
-      const scale = Math.min(devicePixelRatio, 1.6);
+      const scale = Math.min(2, Math.max(1.5, devicePixelRatio));
       canvas.width = Math.round(canvas.clientWidth * scale);
       canvas.height = Math.round(canvas.clientHeight * scale);
+      context.imageSmoothingQuality = "high";
     },
     render(angle) {
       const frame = (clampAngle(angle) / maxAngle + 1) * lastFrame / 2;

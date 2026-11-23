@@ -7,7 +7,7 @@ export function createHeroScene(canvas,context) {
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.toneMapping = T.ACESFilmicToneMapping;
   renderer.toneMappingExposure = .94;
-  renderer.transmissionResolutionScale = 1.0;
+  renderer.transmissionResolutionScale = 1.35;
   const scene = new T.Scene();
   const icon = createIcon();
   scene.add(icon);
@@ -132,7 +132,7 @@ export function createHeroScene(canvas,context) {
       const h = span/2*Math.max(1,1/aspect);
       Object.assign(camera,{left:-h*aspect,right:h*aspect,top:h,bottom:-h});
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.6));
+      renderer.setPixelRatio(Math.min(2.5,Math.max(1.6,window.devicePixelRatio)));
       renderer.setSize(clientWidth,clientHeight,false);
     },
     render(angle,time) {

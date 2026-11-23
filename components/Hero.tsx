@@ -27,21 +27,6 @@ export function Hero({ accent = false }: { accent?: boolean }) {
             <p className={`${s.lead} ${s.reveal}`} style={{ "--i": 1 } as React.CSSProperties}>
               {heroV2.text}
             </p>
-
-            <div className={`${s.actions2} ${s.reveal}`} style={{ "--i": 2 } as React.CSSProperties}>
-              <a href="https://ivs-corp.ru/services/" className={`${s.btn} ${s.btnPrimary}`}>
-                <span className={s.btnChip}>
-                  <ArrowIcon />
-                </span>
-                Все услуги
-              </a>
-              <a href="/projects/" className={`${s.btn} ${s.btnSecondary}`}>
-                <span className={s.btnChip}>
-                  <ArrowIcon />
-                </span>
-                Реализованные проекты
-              </a>
-            </div>
           </div>
 
           {/* 3D-иллюстрация акцентного цвета; за ней — мягкое красное свечение */}
@@ -51,6 +36,21 @@ export function Hero({ accent = false }: { accent?: boolean }) {
               <span className={s.blobB} aria-hidden="true" />
               <HeroIllustration />
             </div>
+          </div>
+
+          <div className={`${s.actions2} ${s.reveal}`} style={{ "--i": 2 } as React.CSSProperties}>
+            <a href="https://ivs-corp.ru/services/" className={`${s.btn} ${s.btnPrimary}`}>
+              <span className={s.btnChip}>
+                <ArrowIcon />
+              </span>
+              Все услуги
+            </a>
+            <a href="/projects/" className={`${s.btn} ${s.btnSecondary}`}>
+              <span className={s.btnChip}>
+                <ArrowIcon />
+              </span>
+              Реализованные проекты
+            </a>
           </div>
         </div>
       </section>

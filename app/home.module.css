@@ -619,7 +619,8 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  grid-template-areas: "copy visual";
+  grid-template-areas: "copy visual" "buttons visual";
+  grid-template-rows: 1fr auto;
   align-items: center;
   column-gap: var(--space-48);
   row-gap: var(--space-48);
@@ -631,8 +632,7 @@
 
 .copy {
   grid-area: copy;
-  align-self: center;
-  padding-bottom: clamp(36px, 6vh, 72px);
+  align-self: start;
 }
 
 /* заголовок: h1 ДС, полужирный — иерархия размером, не толщиной */
@@ -702,10 +702,11 @@
 /* --- Кнопки как у референса: 60px, скругление 16, квадрат-иконка 26px слева --- */
 
 .actions2 {
+  grid-area: buttons;
+  align-self: end;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-16);
-  margin-top: var(--space-48);
 }
 
 .btn {
@@ -780,13 +781,16 @@
 
 .visual {
   grid-area: visual;
+  position: relative;
+  align-self: stretch;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
 .glassScene {
-  position: relative;
-  width: min(115%, 545px);
+  position: absolute;
+  width: min(123%, 870px);
   flex: 0 0 auto;
   aspect-ratio: 1;
 }
@@ -1280,27 +1284,24 @@
     grid-template-columns: 1fr;
     grid-template-areas:
       "copy"
-      "visual";
+      "visual"
+      "buttons";
+    grid-template-rows: auto;
     min-height: 0;
     padding: var(--space-32) var(--space-24);
     border-radius: var(--radius-20);
   }
-  .copy {
-    padding-bottom: 0;
-  }
   .lead {
     font-size: 16px;
     line-height: 24px;
-  }
-  .actions2 {
-    margin-top: var(--space-32);
   }
   .btn {
     height: 52px;
     border-radius: 12px;
   }
   .glassScene {
-    width: min(100%, 360px);
+    position: relative;
+    width: min(112%, 440px);
     margin: 0 auto;
   }
   .cardGrid {
