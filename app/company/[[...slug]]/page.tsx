@@ -35,7 +35,7 @@ export default async function CompanyPage({ params }: Props) {
   const page = findPage(route);
   if (!page) notFound();
   const slug = route?.[0];
-  const isPending = !slug || slug === "licenses" || slug === "partners";
+  const isPending = !slug || slug === "licenses" || slug === "partners" || slug === "requisites";
   const reviews = slug === "reviews" ? await getReviews() : [];
   const vacancies = slug === "vacancy" ? await getVacancies() : [];
 

@@ -6,23 +6,24 @@ import s from "../app/home.module.css";
 
 const maxAngle = Math.PI / 9;
 const period = 32_000;
-const resumeDelay = 2200;
-const clampAngle = (angle: number) => Math.max(-maxAngle, Math.min(maxAngle, angle));
+const resumeDelay = 700;
+const fullTurn = 2 * Math.PI;
+const wrapAngle = (angle: number) => ((angle + Math.PI) % fullTurn + fullTurn) % fullTurn - Math.PI;
 
 type Renderer = ReturnType<typeof import("./hero-cybersecurity-renderer.mjs").createHeroScene>;
 
 async function createFrameRenderer(canvas: HTMLCanvasElement): Promise<Renderer> {
   const atlas = new Image();
-  atlas.src = "/hero/cybersecurity-v5-turn.webp";
+  atlas.src = "/hero/cybersecurity-v6-full-turn.webp";
   await atlas.decode();
   const renderingContext = canvas.getContext("2d");
   if (!renderingContext) throw new Error("Не удалось открыть панораму первого экрана");
   const context = renderingContext;
   context.imageSmoothingQuality = "high";
 
-  const tile = 800;
-  const columns = 6;
-  const lastFrame = 29;
+  const tile = 640;
+  const columns = 8;
+  const frameCount = 72;
 
   function paint(index: number) {
     context.drawImage(
@@ -39,7 +40,7 @@ async function createFrameRenderer(canvas: HTMLCanvasElement): Promise<Renderer>
       context.imageSmoothingQuality = "high";
     },
     render(angle) {
-      const frame = (clampAngle(angle) / maxAngle + 1) * lastFrame / 2;
+      const frame = ((angle % fullTurn + fullTurn) % fullTurn) / fullTurn * frameCount;
       const first = Math.floor(frame);
       const blend = frame - first;
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -48,7 +49,7 @@ async function createFrameRenderer(canvas: HTMLCanvasElement): Promise<Renderer>
       if (blend > 0) {
         context.globalCompositeOperation = "lighter";
         context.globalAlpha = blend;
-        paint(first + 1);
+        paint((first + 1) % frameCount);
         context.globalCompositeOperation = "source-over";
       }
       context.globalAlpha = 1;
@@ -114,6 +115,7 @@ export function HeroIllustration() {
       function draw(now: number) {
         if (!contextLost) {
           activeScene.render(angle.current, reduceMotion.matches ? 0 : (now - start) / 1000);
+          canvas.dataset.rotation = String(angle.current);
         }
       }
 
@@ -127,12 +129,12 @@ export function HeroIllustration() {
         const elapsed = now - lastFrame;
         if (elapsed < 1000 / 24) return;
         lastFrame = now;
-        if (!visible || document.hidden || reduceMotion.matches || contextLost) return;
+        if (!visible || document.hidden || contextLost) return;
 
         if (!drag.current && now >= interactionUntil.current) {
-          const target = maxAngle * Math.sin((now - start) * 2 * Math.PI / period);
-          const ease = 1 - Math.exp(-Math.min(elapsed, 100) / 380);
-          angle.current = clampAngle(angle.current + (target - angle.current) * ease);
+          const target = reduceMotion.matches ? 0 : maxAngle * Math.sin((now - start) * fullTurn / period);
+          const ease = reduceMotion.matches ? 1 : 1 - Math.exp(-Math.min(elapsed, 100) / 850);
+          angle.current = wrapAngle(angle.current + wrapAngle(target - angle.current) * ease);
         }
         draw(now);
       }
@@ -195,7 +197,7 @@ export function HeroIllustration() {
   function moveDrag(event: PointerEvent<HTMLDivElement>) {
     const active = drag.current;
     if (!active || active.pointerId !== event.pointerId) return;
-    angle.current = clampAngle(active.angle + (event.clientX - active.x) * .0055);
+    angle.current = wrapAngle(active.angle + (event.clientX - active.x) * .009);
     drawRef.current?.();
   }
 
@@ -209,7 +211,7 @@ export function HeroIllustration() {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
     const direction = event.key === "ArrowLeft" ? -1 : 1;
-    angle.current = clampAngle(angle.current + direction * Math.PI / 45);
+    angle.current = wrapAngle(angle.current + direction * Math.PI / 45);
     interactionUntil.current = performance.now() + resumeDelay;
     drawRef.current?.();
   }
@@ -220,7 +222,7 @@ export function HeroIllustration() {
       data-ready={ready}
       data-mode={mode}
       tabIndex={ready ? 0 : -1}
-      aria-label={ready ? "3D-иллюстрация сети кибербезопасности. Перетащите или нажмите стрелку влево или вправо, чтобы повернуть." : undefined}
+      aria-label={ready ? "3D-иллюстрация сети кибербезопасности. Перетащите или нажмите стрелку влево или вправо, чтобы повернуть на 360 градусов. После отпускания иллюстрация плавно возвращается." : undefined}
       onPointerDown={startDrag}
       onPointerMove={moveDrag}
       onPointerUp={finishDrag}
