@@ -170,3 +170,13 @@
     padding: var(--space-16);
   }
 }
+
+.list { display: grid; gap: 24px; }
+.fullCard { padding: clamp(24px, 4vw, 48px); border: 1px solid var(--hairline); border-radius: 24px; background: white; }
+.fullHead { display: flex; gap: 24px; align-items: center; margin-bottom: 24px; }
+.fullHead img { object-fit: contain; flex: none; }
+.fullHead h2 { margin: 0 0 12px; font-size: clamp(20px, 2vw, 28px); }
+.fullHead p { margin: 4px 0; }
+.fullText { white-space: pre-line; line-height: 1.75; color: var(--text-muted); margin: 0 0 24px; }
+.track .text { max-height: 240px; overflow-y: auto; white-space: pre-line; }
+@media(max-width: 600px) { .fullHead { align-items: flex-start; gap: 16px; } .fullHead img { width: 56px; height: 56px; } .fullCard { min-width: 0; overflow-wrap: anywhere; } }

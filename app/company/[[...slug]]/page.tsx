@@ -1,3 +1,5 @@
+import { getReviews, getVacancies } from "@/lib/company-content";
+import { Vacancies } from "@/components/Vacancies";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +10,8 @@ import { Partners } from "@/components/Partners";
 import { Reviews } from "@/components/Reviews";
 import { about, nav } from "@/components/ivs-content";
 import s from "../../projects/projects.module.css";
+
+export const revalidate = 300;
 
 type Props = { params: Promise<{ slug?: string[] }> };
 const company = nav.find((item) => item.label === "Компания");
@@ -33,6 +37,8 @@ export default async function CompanyPage({ params }: Props) {
   if (!page) notFound();
   const slug = route?.[0];
   const isAbout = !slug;
+  const reviews = slug === "reviews" ? await getReviews() : [];
+  const vacancies = slug === "vacancy" ? await getVacancies() : [];
 
   return (
     <>
@@ -45,13 +51,14 @@ export default async function CompanyPage({ params }: Props) {
             <span aria-current="page">{page.label}</span>
           </nav>
           <header className={s.head}><h1>{page.label}</h1></header>
-          <img className={s.detailImage} src="/about/about-ivs.jpg" alt="" />
+          {slug !== "reviews" && slug !== "vacancy" && <img className={s.detailImage} src="/about/about-ivs.jpg" alt="" />}
           {isAbout && <p className={s.detailText}>{about.text}</p>}
-          {slug !== "partners" && slug !== "reviews" &&
+          {slug !== "partners" && slug !== "reviews" && slug !== "vacancy" &&
             <a href={"https://ivs-corp.ru" + page.href}>Подробнее на сайте ИВС-СЕТИ</a>}
         </article>
         {slug === "partners" && <Partners standalone />}
-        {slug === "reviews" && <Reviews standalone />}
+        {slug === "reviews" && <Reviews standalone reviews={reviews} />}
+        {slug === "vacancy" && <Vacancies vacancies={vacancies} />}
         <ContactsBlock />
       </main>
       <Footer />

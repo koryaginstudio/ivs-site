@@ -1,3 +1,4 @@
+import { getReviews } from "@/lib/company-content";
 import { Hero } from "@/components/Hero";
 import { Cards } from "@/components/Cards";
 import { About } from "@/components/About";
@@ -13,7 +14,8 @@ import { Footer } from "@/components/Footer";
 // появлялись без пересборки (при работе на локальном снапшоте ничего не меняет).
 export const revalidate = 300;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const reviews = await getReviews();
   return (
     <>
       <Hero />
@@ -23,7 +25,7 @@ export default function HomePage() {
       <Projects />
       <Partners />
       <News />
-      <Reviews />
+      <Reviews reviews={reviews} />
       <ContactsBlock />
       <Footer />
     </>
