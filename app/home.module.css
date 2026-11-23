@@ -631,7 +631,8 @@
 
 .copy {
   grid-area: copy;
-  align-self: end;
+  align-self: center;
+  padding-bottom: clamp(36px, 6vh, 72px);
 }
 
 /* заголовок: h1 ДС, полужирный — иерархия размером, не толщиной */
@@ -785,19 +786,55 @@
 
 .glassScene {
   position: relative;
-  width: min(100%, 500px);
+  width: min(115%, 545px);
+  flex: 0 0 auto;
   aspect-ratio: 1;
 }
 
-/* иллюстрация: мягкая тень и плавное приближение при наведении */
-.heroImg {
+.heroModel {
   position: relative;
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 24px 40px rgba(120, 20, 24, 0.18));
+}
+
+.heroPoster,
+.heroCanvas {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  filter: drop-shadow(0 24px 40px rgba(120, 20, 24, 0.18));
-  transition: transform var(--dur-hover) var(--ease-hover);
+  height: 100%;
+}
+
+.heroCanvas {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.heroModel[data-ready="true"] {
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.heroModel[data-ready="true"] .heroPoster {
+  visibility: hidden;
+}
+
+.heroModel[data-ready="true"][data-mode="webgl"] [data-surface="webgl"],
+.heroModel[data-ready="true"][data-mode="frames"] [data-surface="frames"] {
+  opacity: 1;
+}
+
+.heroModel[data-ready="true"]:active {
+  cursor: grabbing;
+}
+
+.heroModel:focus-visible {
+  outline: 2px solid var(--red_main);
+  outline-offset: -2px;
+  border-radius: var(--radius-20);
 }
 
 /* --- Пометка «иллюстрация тестовая» --- */
@@ -969,7 +1006,7 @@
   background: radial-gradient(closest-side, rgba(255, 200, 205, 0.25), rgba(255, 200, 205, 0));
 }
 
-.panelAccent .heroImg {
+.panelAccent .heroModel {
   filter: drop-shadow(0 28px 44px rgba(60, 0, 6, 0.35));
 }
 
@@ -1183,9 +1220,6 @@
   .stat:hover .statLabel {
     color: var(--white_text_elements);
   }
-  .glassScene:hover .heroImg {
-    transform: scale(1.05);
-  }
   .noteBtn:hover {
     border-color: var(--line-strong);
   }
@@ -1232,7 +1266,7 @@
     display: grid;
   }
   .panel {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.87fr);
     gap: var(--space-32);
     padding: var(--space-32);
   }
@@ -1251,6 +1285,9 @@
     padding: var(--space-32) var(--space-24);
     border-radius: var(--radius-20);
   }
+  .copy {
+    padding-bottom: 0;
+  }
   .lead {
     font-size: 16px;
     line-height: 24px;
@@ -1263,7 +1300,7 @@
     border-radius: 12px;
   }
   .glassScene {
-    width: min(100%, 240px);
+    width: min(100%, 360px);
     margin: 0 auto;
   }
   .cardGrid {
@@ -1310,8 +1347,7 @@
   .btn:hover .btnChip,
   .card:hover .cardArrow,
   .card:hover .cardMedia,
-  .partnerItem:hover .partnerLogo,
-  .glassScene:hover .heroImg {
+  .partnerItem:hover .partnerLogo {
     transform: none;
   }
   .dropdown,
@@ -1809,6 +1845,15 @@
   scrollbar-width: none;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+.partnerTrack {
+  cursor: grab;
+}
+
+.partnerTrack[data-dragging] {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .partnerTrack::-webkit-scrollbar {

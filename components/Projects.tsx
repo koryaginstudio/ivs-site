@@ -7,12 +7,12 @@ import s from "../app/home.module.css";
 
 // Проекты: карточки с фото 1:1 + доработанная календарная механика (лента лет).
 // Данные - из слоя lib/projects (Supabase, пока - локальный снапшот каталога ivs-corp.ru).
-export async function Projects() {
+export async function Projects({ title = "Проекты" }: { title?: string }) {
   const projects = await getProjects();
 
   return (
     <Reveal as="section" className={s.section} ariaLabel="Проекты">
-      <SectionHead title="Проекты" linkHref={projectsCatalogHref} linkLabel="Все проекты" />
+      <SectionHead title={title} linkHref={projectsCatalogHref} linkLabel="Все проекты" />
       <ProjectsBrowser projects={projects} />
     </Reveal>
   );

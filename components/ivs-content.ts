@@ -15,14 +15,14 @@ export const nav: NavItem[] = [
   {
     kind: "menu",
     label: "Компания",
-    href: "https://ivs-corp.ru/company/",
+    href: "/company/",
     items: [
-      { label: "О компании", href: "https://ivs-corp.ru/company/" },
-      { label: "Лицензии", href: "https://ivs-corp.ru/company/licenses/" },
-      { label: "Партнёры", href: "https://ivs-corp.ru/company/partners/" },
-      { label: "Отзывы", href: "https://ivs-corp.ru/company/reviews/" },
-      { label: "Вакансии", href: "https://ivs-corp.ru/company/vacancy/" },
-      { label: "Реквизиты", href: "https://ivs-corp.ru/company/requisites/" },
+      { label: "О компании", href: "/company/" },
+      { label: "Лицензии", href: "/company/licenses/" },
+      { label: "Партнёры", href: "/company/partners/" },
+      { label: "Отзывы", href: "/company/reviews/" },
+      { label: "Вакансии", href: "/company/vacancy/" },
+      { label: "Реквизиты", href: "/company/requisites/" },
     ],
   },
   {
@@ -230,7 +230,7 @@ export const stats = [
 export const about = {
   title: "О компании",
   text: "Компания основана в 1990 году группой научных сотрудников НИИ. Сегодня ИВС — многопрофильный системный интегратор: проектирует, строит и сопровождает ИТ-инфраструктуру, сети, ЦОД и информационные системы предприятий и государственных заказчиков.",
-  href: "https://ivs-corp.ru/company/",
+  href: "/company/",
   numbers: [
     { value: "480", label: "сотрудников" },
     { value: "1447", label: "реализованных проектов" },
@@ -248,7 +248,7 @@ export const newsHref = "/info/news/";
 // Данные и оптический размер логотипов генерируются scripts/sync-partners.py.
 export { partnerLogos } from "./partners-data";
 export type { PartnerLogo } from "./partners-data";
-export const partnersHref = "https://ivs-corp.ru/company/partners/";
+export const partnersHref = "/company/partners/";
 
 // Контакты — с ivs-corp.ru/contacts/.
 export const contacts = {

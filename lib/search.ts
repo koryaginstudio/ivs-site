@@ -52,7 +52,7 @@ export function projectEntries(projects: ProjectPost[]): SearchEntry[] {
   return projects.map((p) => ({
     title: p.title,
     category: "Проекты",
-    href: p.sourceUrl,
+    href: "/projects/" + p.slug + "/",
     text: [p.industry, p.description, p.year > 0 ? String(p.year) : null].filter(Boolean).join(" "),
   }));
 }

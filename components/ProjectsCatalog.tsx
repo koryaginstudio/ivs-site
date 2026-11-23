@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ProjectPost } from "@/lib/projects";
 import { competencyFilters, industryFilters } from "@/lib/project-filters";
 import card from "../app/home.module.css";
@@ -125,7 +125,7 @@ export function ProjectsCatalog({ projects, initialFilters }: { projects: Projec
         <ul className={s.grid}>
           {shown.map((project) => (
             <li key={project.slug}>
-              <a href={project.sourceUrl} className={`${card.projCard} ${s.card}`}>
+              <a href={"/projects/" + project.slug + "/"} className={`${card.projCard} ${s.card}`}>
                 <span className={`${card.projMedia} ${s.media}`}>
                   {project.image ? <img src={project.image} alt="" loading="lazy" /> : null}
                 </span>
@@ -187,17 +187,72 @@ function FilterSelect({ label, value, onChange, allLabel, options }: {
   allLabel: string;
   options: { value: string; label: string }[];
 }) {
-  const id = `project-filter-${label}`;
+  const id = useId();
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const items = [{ value: "all", label: allLabel }, ...options];
+  const selected = items.find((item) => item.value === value) ?? items[0];
+
+  useEffect(() => {
+    if (!open) return;
+    root.current?.querySelector<HTMLElement>("[aria-checked=true]")?.focus();
+    function closeOutside(event: PointerEvent) {
+      if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false);
+    }
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [open]);
+
+  function close() {
+    trigger.current?.focus();
+    setOpen(false);
+  }
+
   return (
-    <label className={s.filter} htmlFor={id}>
-      <span className={s.filterLabel}>{label}</span>
-      <span className={s.selectWrap}>
-        <select id={id} value={value} onChange={(event) => onChange(event.target.value)}>
-          <option value="all">{allLabel}</option>
-          {options.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
-        </select>
-        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="m1 1.5 6 5 6-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </span>
-    </label>
+    <div className={s.filter} ref={root} onBlur={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+    }}>
+      <span className={s.filterLabel} id={id + "-label"}>{label}</span>
+      <div className={s.selectWrap}>
+        <button type="button" ref={trigger} className={s.filterButton}
+          aria-labelledby={id + "-label " + id + "-value"} aria-haspopup="menu" aria-expanded={open}
+          onClick={() => setOpen(!open)} onKeyDown={(event) => {
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+              event.preventDefault();
+              setOpen(true);
+            }
+          }}>
+          <span id={id + "-value"}>{selected.label}</span>
+          <svg width="14" height="8" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="m1 1.5 6 5 6-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        {open && (
+          <div className={s.filterMenu} role="menu" aria-labelledby={id + "-label"} onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              close();
+              return;
+            }
+            const entries = [...event.currentTarget.querySelectorAll("button")];
+            const current = entries.indexOf(document.activeElement as HTMLButtonElement);
+            let next = current;
+            if (event.key === "Home") next = 0;
+            else if (event.key === "End") next = entries.length - 1;
+            else if (event.key === "ArrowDown") next = (current + 1) % entries.length;
+            else if (event.key === "ArrowUp") next = (current - 1 + entries.length) % entries.length;
+            else return;
+            event.preventDefault();
+            entries[next]?.focus();
+          }}>
+            {items.map((option) => (
+              <button key={option.value} type="button" role="menuitemradio" aria-checked={option.value === selected.value} tabIndex={-1}
+                onClick={() => { onChange(option.value); close(); }}>
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

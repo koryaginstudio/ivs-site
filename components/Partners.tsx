@@ -26,21 +26,25 @@ function Arrow({ direction }: { direction: "left" | "right" }) {
 }
 
 // Официальные вендоры ИВС: 15 логотипов на экран, нативный свайп и покадровая навигация.
-export function Partners() {
+export function Partners({ standalone = false }: { standalone?: boolean }) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const targetPage = useRef(0);
+  const [index, setIndex] = useState(0);
+  const targetIndex = useRef(0);
   const programmatic = useRef(false);
   const animationFrame = useRef<number | null>(null);
-  const [page, setPage] = useState(0);
+  const dragState = useRef<{ startX: number; startScroll: number; moved: boolean; dir: number } | null>(null);
 
   useEffect(() => () => {
     if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
   }, []);
 
-  const measuredPage = () => {
+  const step = () => trackRef.current?.clientWidth ?? 0;
+
+  const measuredIndex = () => {
     const track = trackRef.current;
-    if (!track?.clientWidth) return 0;
-    return Math.max(0, Math.min(Math.round(track.scrollLeft / track.clientWidth), pages.length - 1));
+    const size = step();
+    if (!track || !size) return 0;
+    return Math.max(0, Math.min(Math.round(track.scrollLeft / size), pages.length - 1));
   };
 
   const restoreTrack = (track: HTMLDivElement) => {
@@ -49,45 +53,34 @@ export function Partners() {
   };
 
   const finishScroll = (target: number) => {
-    const track = trackRef.current;
     animationFrame.current = null;
     programmatic.current = false;
-    if (track) restoreTrack(track);
-    targetPage.current = target;
-    setPage(target);
-  };
-
-  const cancelAnimation = () => {
-    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
-    animationFrame.current = null;
-    if (!programmatic.current) return;
-    programmatic.current = false;
     const track = trackRef.current;
-    if (track) restoreTrack(track);
-    const actual = measuredPage();
-    targetPage.current = actual;
-    setPage(actual);
+    if (track) {
+      restoreTrack(track);
+      track.removeAttribute("data-dragging");
+    }
+    targetIndex.current = target;
+    setIndex(target);
   };
 
-  const onScroll = () => {
-    // Промежуточные кадры не меняют цель следующего клика.
-    if (programmatic.current) return;
-    const actual = measuredPage();
-    targetPage.current = actual;
-    setPage(actual);
+  const syncIndex = () => {
+    if (dragState.current || programmatic.current) return;
+    const actual = measuredIndex();
+    targetIndex.current = actual;
+    setIndex(actual);
   };
 
-  const goTo = (direction: number) => {
+  const animateTo = (target: number) => {
     const track = trackRef.current;
-    if (!track?.clientWidth) return;
+    const size = step();
+    if (!track || !size) return;
     if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
 
-    const target = Math.max(0, Math.min(targetPage.current + direction, pages.length - 1));
-    targetPage.current = target;
-    setPage(target);
-
+    targetIndex.current = target;
+    setIndex(target);
     const start = track.scrollLeft;
-    const end = target * track.clientWidth;
+    const end = Math.min(target * size, track.scrollWidth - track.clientWidth);
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     track.style.scrollSnapType = "none";
     track.style.scrollBehavior = "auto";
@@ -112,18 +105,88 @@ export function Partners() {
     animationFrame.current = requestAnimationFrame(animate);
   };
 
+  const goTo = (direction: number) => {
+    const target = Math.max(0, Math.min(targetIndex.current + direction, pages.length - 1));
+    animateTo(target);
+  };
+
+  // перетаскивание ленты мышью: тач-устройства работают нативным свайпом
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    const track = trackRef.current;
+    if (!track) return;
+    // Останавливаем незавершённую анимацию перед началом жеста.
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
+    animationFrame.current = null;
+    programmatic.current = false;
+    restoreTrack(track);
+    targetIndex.current = measuredIndex();
+    dragState.current = { startX: event.clientX, startScroll: track.scrollLeft, moved: false, dir: 0 };
+  };
+
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const state = dragState.current;
+    const track = trackRef.current;
+    if (!state || !track) return;
+    const delta = event.clientX - state.startX;
+    if (!state.moved && Math.abs(delta) > 5) {
+      state.moved = true;
+      track.setAttribute("data-dragging", "");
+      track.style.scrollSnapType = "none";
+      track.style.scrollBehavior = "auto";
+      try {
+        track.setPointerCapture(event.pointerId);
+      } catch {
+        // синтетические события без активного указателя - drag продолжит работать пока курсор над лентой
+      }
+    }
+    if (state.moved) {
+      // запоминаем последнее направление жеста: 1 - вперёд, -1 - назад
+      if (delta !== 0) state.dir = delta < 0 ? 1 : -1;
+      track.scrollLeft = state.startScroll - delta;
+    }
+  };
+
+  const onPointerEnd = () => {
+    const state = dragState.current;
+    const track = trackRef.current;
+    if (!state || !track) return;
+    dragState.current = null;
+    if (!state.moved) {
+      track.removeAttribute("data-dragging");
+      return;
+    }
+    // доводка строго в сторону жеста: лента никогда не едет против руки -
+    // тянул вперёд, даже чуть-чуть - карточка доставляется, назад - возвращается
+    const size = step();
+    if (!size) {
+      track.removeAttribute("data-dragging");
+      restoreTrack(track);
+      return;
+    }
+    const pos = track.scrollLeft / size;
+    const target =
+      state.dir > 0
+        ? Math.min(Math.ceil(pos - 0.001), pages.length - 1)
+        : Math.max(Math.floor(pos + 0.001), 0);
+    animateTo(target);
+  };
+
   return (
     <Reveal as="section" id="partners" className={`${s.section} ${s.sectionMuted}`} ariaLabel="Партнёры">
-      <SectionHead title="Наши партнёры" linkHref={partnersHref} linkLabel="Все партнёры" />
+      {!standalone && <SectionHead title="Наши партнёры" linkHref={partnersHref} linkLabel="Все партнёры" />}
       <div
         ref={trackRef}
         className={s.partnerTrack}
         role="region"
         aria-label="Лента партнёров"
         tabIndex={0}
-        onScroll={onScroll}
-        onPointerDown={cancelAnimation}
-        onWheel={cancelAnimation}
+        onScroll={syncIndex}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
+        onPointerLeave={onPointerEnd}
       >
         {pages.map((partners, pageIndex) => (
           <ul className={s.partnerGrid} key={pageIndex} aria-label={`Страница ${pageIndex + 1} из ${pages.length}`}>
@@ -134,6 +197,7 @@ export function Partners() {
                   src={partner.logo}
                   alt={partner.name}
                   loading="lazy"
+                  draggable={false}
                 />
               </li>
             ))}
@@ -142,7 +206,7 @@ export function Partners() {
       </div>
       <div className={s.partnerControls}>
         <span className={s.partnerPage} aria-live="polite">
-          {String(page + 1).padStart(2, "0")} / {String(pages.length).padStart(2, "0")}
+          {String(index + 1).padStart(2, "0")} / {String(pages.length).padStart(2, "0")}
         </span>
         <div className={s.partnerArrows}>
           {/* стрелки всегда на месте: в крайних положениях не пропадают, а гаснут */}
@@ -150,7 +214,7 @@ export function Partners() {
             type="button"
             className={s.partnerArrow}
             onClick={() => goTo(-1)}
-            disabled={page === 0}
+            disabled={index === 0}
             aria-label="Предыдущие партнёры"
           >
             <Arrow direction="left" />
@@ -159,7 +223,7 @@ export function Partners() {
             type="button"
             className={s.partnerArrow}
             onClick={() => goTo(1)}
-            disabled={page === pages.length - 1}
+            disabled={index === pages.length - 1}
             aria-label="Следующие партнёры"
           >
             <Arrow direction="right" />

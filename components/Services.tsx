@@ -33,7 +33,9 @@ function subserviceLabel(count: number) {
 export function Services() {
   const [active, setActive] = useState(0);
   const [displayActive, setDisplayActive] = useState(0);
-  const [previewVisible, setPreviewVisible] = useState(true);
+  const [layers, setLayers] = useState([0, 0]);
+  const [visibleLayer, setVisibleLayer] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [open, setOpen] = useState(-1); // по умолчанию все направления закрыты
   // аккордеон: клик раскрывает панель и переключает видео, повторный клик закрывает;
   // переход на страницу направления - по ссылке «Открыть направление» внутри панели
@@ -47,7 +49,6 @@ export function Services() {
   };
   // До чтения системной настройки движение запрещено, чтобы reduced-motion не запускался даже на кадр.
   const [reducedMotion, setReducedMotion] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const previewRailRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLElement>(null);
 
@@ -61,32 +62,62 @@ export function Services() {
 
   useEffect(() => {
     if (active === displayActive) return;
-    if (reducedMotion) {
-      setDisplayActive(active);
-      setPreviewVisible(true);
-      return;
+    if (layers[1 - visibleLayer] !== active) {
+      setLayers((previous) => previous.map((item, index) => index === visibleLayer ? item : active));
     }
-
-    setPreviewVisible(false);
-    const timer = window.setTimeout(() => {
-      setDisplayActive(active);
-      setPreviewVisible(true);
-    }, 180);
-    return () => window.clearTimeout(timer);
-  }, [active, displayActive, reducedMotion]);
+  }, [active, displayActive, layers, visibleLayer]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (reducedMotion) {
-      video.pause();
-      video.currentTime = 0;
-    } else {
-      video.play().catch(() => {
-        // Poster остаётся видимым, если браузер запретил автовоспроизведение.
-      });
+    const incoming = 1 - visibleLayer;
+    if (active === displayActive || layers[incoming] !== active) return;
+    const video = videoRefs.current[incoming];
+    let cancelled = false;
+    let finished = false;
+
+    const show = () => {
+      if (cancelled || finished) return;
+      finished = true;
+      setVisibleLayer(incoming);
+      setDisplayActive(active);
+    };
+
+    const poster = new Image();
+    poster.src = previews[active].poster;
+    const showPoster = () => void poster.decode().then(show, show);
+
+    const play = () => {
+      if (!video) return showPoster();
+      if (reducedMotion) return showPoster();
+      void video.play().then(show, showPoster);
+    };
+
+    if (reducedMotion || !video || video.error) showPoster();
+    else if (video.readyState >= 2) play();
+    else {
+      video.addEventListener("loadeddata", play, { once: true });
+      video.addEventListener("error", showPoster, { once: true });
     }
-  }, [displayActive, reducedMotion]);
+    const timeout = window.setTimeout(showPoster, 1100);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+      video?.removeEventListener("loadeddata", play);
+      video?.removeEventListener("error", showPoster);
+    };
+  }, [active, displayActive, layers, reducedMotion, visibleLayer]);
+
+  useEffect(() => {
+    const current = videoRefs.current[visibleLayer];
+    const previous = videoRefs.current[1 - visibleLayer];
+    if (reducedMotion) {
+      current?.pause();
+      previous?.pause();
+      return;
+    }
+    void current?.play().catch(() => {});
+    const pause = window.setTimeout(() => previous?.pause(), 380);
+    return () => window.clearTimeout(pause);
+  }, [visibleLayer, reducedMotion]);
 
   useEffect(() => {
     const rail = previewRailRef.current;
@@ -236,21 +267,32 @@ export function Services() {
         </ol>
 
         <div className={styles.previewRail} ref={previewRailRef}>
-          <figure className={styles.preview} ref={previewRef} data-switching={!previewVisible || undefined}>
-            <div className={styles.media} style={{ backgroundImage: `url(${preview.poster})` }}>
-              <video
-                key={displayActive}
-                ref={videoRef}
-                className={styles.video}
-                src={preview.video}
-                poster={preview.poster}
-                muted
-                loop
-                playsInline
-                autoPlay={!reducedMotion}
-                preload="metadata"
-                aria-label={`${current.label}. ${preview.project}`}
-              />
+          <figure className={styles.preview} ref={previewRef}>
+            <div className={styles.media}>
+              {[0, 1].map((slot) => {
+                const layer = previews[layers[slot]];
+                return (
+                  <div
+                    key={slot}
+                    className={styles.mediaLayer}
+                    data-visible={visibleLayer === slot}
+                    style={{ backgroundImage: `url(${layer.poster})` }}
+                  >
+                    <video
+                      key={layer.video}
+                      ref={(node) => { videoRefs.current[slot] = node; }}
+                      className={styles.video}
+                      src={layer.video}
+                      poster={layer.poster}
+                      muted
+                      loop
+                      playsInline
+                      preload={reducedMotion ? "none" : "auto"}
+                      aria-hidden="true"
+                    />
+                  </div>
+                );
+              })}
             </div>
             <figcaption className={styles.caption} aria-live="polite">
               <span className={styles.captionTitle}>{current.label}</span>

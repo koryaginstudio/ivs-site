@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ContactsBlock } from "@/components/ContactsBlock";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ProjectsCatalog } from "@/components/ProjectsCatalog";
@@ -44,6 +45,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
           }}
         />
       </main>
+      <ContactsBlock title="Наши специалисты ответят на ваши вопросы" />
       <Footer />
     </>
   );

@@ -9,7 +9,7 @@ const legalDocs = [
   { label: "Политика обработки персональных данных", href: "https://ivs-corp.ru/include/licenses_detail.php" },
   { label: "Согласие на обработку персональных данных", href: "https://ivs-corp.ru/include/agreement_detail.php" },
   { label: "Использование cookie", href: "/cookie/" },
-  { label: "Реквизиты компании", href: "https://ivs-corp.ru/company/requisites/" },
+  { label: "Реквизиты компании", href: "/company/requisites/" },
   {
     label: "Сведения о СОУТ",
     href: "https://ivs-corp.ru/upload/%D0%A1%D0%92%D0%9E%D0%94%D0%9D%D0%90%D0%AF%20%D0%92%D0%95%D0%94%D0%9E%D0%9C%D0%9E%D0%A1%D0%A2%D0%AC%20%D0%A1%D0%9E%D0%A3%D0%A2%20%D0%97%D0%90%D0%9E%20%D0%98%D0%92%D0%A1%20%D0%A1%D0%95%D0%A2%D0%98%2018.04.24.pdf",

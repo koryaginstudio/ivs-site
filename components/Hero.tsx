@@ -1,5 +1,6 @@
 import { heroV2 } from "@/components/ivs-content";
 import { Header } from "./Header";
+import { HeroIllustration } from "./HeroIllustration";
 import s from "../app/home.module.css";
 
 function ArrowIcon() {
@@ -48,7 +49,7 @@ export function Hero({ accent = false }: { accent?: boolean }) {
             <div className={s.glassScene}>
               <span className={s.blobA} aria-hidden="true" />
               <span className={s.blobB} aria-hidden="true" />
-              <img src="/hero/v2-hub.webp" alt="" width={1254} height={1254} className={s.heroImg} />
+              <HeroIllustration />
             </div>
           </div>
         </div>

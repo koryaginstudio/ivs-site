@@ -140,7 +140,7 @@ export function ProjectsBrowser({ projects }: { projects: ProjectPost[] }) {
         <ul ref={gridRef} className={s.projGrid}>
           {shown.map((p, i) => (
             <li key={p.slug} style={{ "--i": i } as React.CSSProperties}>
-              <a href={p.sourceUrl} className={s.projCard}>
+              <a href={"/projects/" + p.slug + "/"} className={s.projCard}>
                 <span className={s.projMedia}>
                   {p.image ? <img src={p.image} alt="" loading="lazy" /> : null}
                 </span>

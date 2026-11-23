@@ -7,7 +7,7 @@ import reviewMedia from "./reviews-media.json";
 import home from "../app/home.module.css";
 import styles from "./Reviews.module.css";
 
-const reviewsUrl = "https://ivs-corp.ru/company/reviews/";
+const reviewsUrl = "/company/reviews/";
 
 type Review = {
   organization: string;
@@ -302,7 +302,7 @@ function Arrow({ direction }: { direction: "left" | "right" }) {
 }
 
 // Слайдер отзывов: нативный свайп, карточки со scroll-snap, стрелки гаснут в крайних положениях.
-export function Reviews() {
+export function Reviews({ standalone = false }: { standalone?: boolean }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const targetIndex = useRef(0);
@@ -460,7 +460,7 @@ export function Reviews() {
 
   return (
     <Reveal as="section" className={`${home.section} ${home.sectionMuted}`} ariaLabel="Отзывы клиентов">
-      <SectionHead title="Отзывы клиентов" linkHref={reviewsUrl} linkLabel="Все отзывы" />
+      {!standalone && <SectionHead title="Отзывы клиентов" linkHref={reviewsUrl} linkLabel="Все отзывы" />}
       <div
         ref={trackRef}
         className={styles.track}
